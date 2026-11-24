@@ -145,7 +145,9 @@ def merge_fields(schema: DocSchema, rules: RulesResult, vlm: dict | None, lines:
                 # also anchor to the printed value if the OCR read it
                 printed = ground(value, typ, lines, limit=2)
                 if printed:
+                    # point the user at the printed value; the QR remains as additional evidence
                     fv.evidence_ids += [ln.id for ln in printed]
+                    fv.bounding_box, fv.page = printed[0].bbox, printed[0].page
             else:  # vlm
                 hits = ground(value, typ, lines)
                 if hits:

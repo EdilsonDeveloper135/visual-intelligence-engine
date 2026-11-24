@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     secret_key: SecretStr = SecretStr("dev-insecure-secret-change-me")
     access_key: SecretStr = SecretStr("dev-access-key")
     auth_enabled: bool = True
-    port: int = 8080
+    port: int = 8765
     allowed_hosts: list[str] = Field(default_factory=lambda: ["127.0.0.1", "localhost"])
     session_hours: int = 12
     cookie_name: str = "vie_session"

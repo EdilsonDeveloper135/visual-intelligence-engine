@@ -30,7 +30,7 @@ x-backend-env: &backend-env
   VIE_OLLAMA_URL: http://ollama:11434
   VIE_SECRET_KEY: ${VIE_SECRET_KEY:?run scripts/install.sh first}
   VIE_ACCESS_KEY: ${VIE_ACCESS_KEY:?run scripts/install.sh first}
-  VIE_PORT: ${VIE_PORT:-8080}
+  VIE_PORT: ${VIE_PORT:-8765}
   VIE_VLM_MODEL: ${VIE_VLM_MODEL:-qwen3-vl:2b-instruct}
   VIE_VLM_NUM_CTX: ${VIE_VLM_NUM_CTX:-4096}
   VIE_VLM_NUM_PREDICT: ${VIE_VLM_NUM_PREDICT:-768}
@@ -54,6 +54,36 @@ x-backend-env: &backend-env
   TMPDIR: /data/staging
 
 services:
+  # ---------------------------------------------------------------------------
+  # Web UI + reverse proxy. The ONLY published port, bound to 127.0.0.1.
+  # ---------------------------------------------------------------------------
+  frontend:
+    <<: *hardening
+    build:
+      context: frontend
+      target: runtime
+    image: vie/frontend:1.0.0
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,uid=101,gid=101,mode=1777
+      - /var/cache/nginx:size=8m,uid=101,gid=101,mode=0755
+    ports:
+      - "${VIE_BIND_ADDRESS:-127.0.0.1}:${VIE_PORT:-8765}:8080"
+    networks:
+      - edge
+      - app
+    depends_on:
+      api:
+        condition: service_started
+    deploy:
+      resources:
+        limits:
+          cpus: "${VIE_FRONTEND_CPUS:-0.5}"
+          memory: ${VIE_FRONTEND_MEM:-48m}
+          pids: 64
+    memswap_limit: ${VIE_FRONTEND_MEM:-48m}
+    oom_score_adj: 400
+
   # ---------------------------------------------------------------------------
   # Visual memory + job queue (layer G). Internal network "core" only.
   # ---------------------------------------------------------------------------

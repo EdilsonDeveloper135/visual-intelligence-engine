@@ -1,0 +1,220 @@
+@import "tailwindcss";
+@import "@fontsource-variable/atkinson-hyperlegible-next";
+@import "@fontsource-variable/atkinson-hyperlegible-mono";
+
+/* ---------------------------------------------------------------------------
+   "Mesa de verificación" tokens.
+   Pencil vocabulary of document proofing:
+     blue  = read by the machine     green = independently verified
+     red   = needs human review      amber = warning      ink = human edit
+     pink  = machine-readable codes (QR / barcodes)
+   --------------------------------------------------------------------------- */
+:root {
+  --desk: #e4e8ec;
+  --desk-2: #d6dce3;
+  --paper: #fbfcfd;
+  --paper-2: #f1f4f7;
+  --ink: #1d2733;
+  --ink-2: #4a5766;
+  --ink-3: #6f7b89;
+  --rule: #c9d1d9;
+  --blue: #2f5dd0;
+  --blue-wash: rgb(47 93 208 / 0.1);
+  --green: #2e7d5b;
+  --green-wash: rgb(46 125 91 / 0.12);
+  --red: #c8323c;
+  --red-wash: rgb(200 50 60 / 0.1);
+  --amber: #a86c12;
+  --amber-wash: rgb(183 121 31 / 0.13);
+  --pink: #b83e86;
+  --pink-wash: rgb(184 62 134 / 0.12);
+  --overlay-text: #0f2c80;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --desk: #151b22;
+    --desk-2: #0f141a;
+    --paper: #1e252e;
+    --paper-2: #252d37;
+    --ink: #e3e8ee;
+    --ink-2: #aab5c2;
+    --ink-3: #8592a1;
+    --rule: #323d4a;
+    --blue: #8aa9ff;
+    --blue-wash: rgb(138 169 255 / 0.14);
+    --green: #5cc79a;
+    --green-wash: rgb(92 199 154 / 0.14);
+    --red: #ff7d7d;
+    --red-wash: rgb(255 125 125 / 0.13);
+    --amber: #e3b04b;
+    --amber-wash: rgb(227 176 75 / 0.14);
+    --pink: #f08cc8;
+    --pink-wash: rgb(240 140 200 / 0.14);
+    --overlay-text: #0f2c80;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --desk: #151b22;
+  --desk-2: #0f141a;
+  --paper: #1e252e;
+  --paper-2: #252d37;
+  --ink: #e3e8ee;
+  --ink-2: #aab5c2;
+  --ink-3: #8592a1;
+  --rule: #323d4a;
+  --blue: #8aa9ff;
+  --blue-wash: rgb(138 169 255 / 0.14);
+  --green: #5cc79a;
+  --green-wash: rgb(92 199 154 / 0.14);
+  --red: #ff7d7d;
+  --red-wash: rgb(255 125 125 / 0.13);
+  --amber: #e3b04b;
+  --amber-wash: rgb(227 176 75 / 0.14);
+  --pink: #f08cc8;
+  --pink-wash: rgb(240 140 200 / 0.14);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-desk: var(--desk);
+  --color-desk-2: var(--desk-2);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-blue: var(--blue);
+  --color-blue-wash: var(--blue-wash);
+  --color-green: var(--green);
+  --color-green-wash: var(--green-wash);
+  --color-red: var(--red);
+  --color-red-wash: var(--red-wash);
+  --color-amber: var(--amber);
+  --color-amber-wash: var(--amber-wash);
+  --color-pink: var(--pink);
+  --color-pink-wash: var(--pink-wash);
+  --font-sans: "Atkinson Hyperlegible Next Variable", system-ui, sans-serif;
+  --font-mono: "Atkinson Hyperlegible Mono Variable", ui-monospace, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--desk);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Type scale (minor third from 14px) */
+.t-title { font-size: 1.44rem; line-height: 1.2; font-weight: 680; letter-spacing: -0.01em; }
+.t-head { font-size: 1.125rem; line-height: 1.3; font-weight: 650; }
+.t-sub { font-size: 0.95rem; font-weight: 620; }
+.t-small { font-size: 0.8125rem; }
+.t-tiny { font-size: 0.75rem; }
+.num { font-variant-numeric: tabular-nums; }
+.raw { font-family: var(--font-mono); font-size: 0.8125rem; }
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@layer components {
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 2rem;
+    padding: 0 0.75rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.8125rem;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:hover:not(:disabled) { background: var(--paper-2); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ink { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .btn-ink:hover:not(:disabled) { background: var(--ink-2); border-color: var(--ink-2); }
+  .btn-quiet { border-color: transparent; background: transparent; }
+  .btn-danger { color: var(--red); border-color: var(--red); background: transparent; }
+  .btn-icon { width: 2rem; padding: 0; justify-content: center; }
+  .field-input {
+    height: 2rem;
+    padding: 0 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink);
+    font: inherit;
+    min-width: 0;
+  }
+  .field-input:focus { outline: 2px solid var(--blue); outline-offset: -1px; }
+  .tab {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 2px solid transparent;
+    color: var(--ink-2);
+    font-weight: 600;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .panel { background: var(--paper); }
+  .hairline { border-color: var(--rule); }
+}
+
+/* Pencil marks used for provenance / verification status */
+.mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  border: 1.6px solid currentColor;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex: none;
+}
+
+/* Overlay boxes on the document */
+.ov-line { fill: transparent; stroke: var(--blue); stroke-opacity: 0.35; }
+.ov-line:hover, .ov-line.is-hot { fill: var(--blue-wash); stroke-opacity: 1; }
+.ov-field { fill: var(--green-wash); stroke: var(--green); }
+.ov-review { fill: var(--red-wash); stroke: var(--red); stroke-dasharray: 6 4; }
+.ov-code { fill: var(--pink-wash); stroke: var(--pink); }
+.ov-select { fill: var(--blue-wash); stroke: var(--blue); stroke-dasharray: 4 3; }
+.ov-hot {
+  fill: rgb(255 214 10 / 0.28);
+  stroke: #e0a800;
+  stroke-width: 3;
+}
+
+.scroll-thin { scrollbar-width: thin; scrollbar-color: var(--rule) transparent; }
