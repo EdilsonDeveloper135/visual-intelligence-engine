@@ -1,0 +1,75 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("assets/fonts/ahn-latin.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #e4e8ec;
+      color: #1d2733;
+      font-family: "Atkinson Hyperlegible Next", sans-serif;
+    }
+    .shot {
+      position: absolute;
+      left: 192px;
+      top: 40px;
+      width: 1536px;
+      height: 880px;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #fbfcfd;
+      box-shadow: 0 18px 40px rgba(29, 39, 51, 0.22);
+    }
+    .shot img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1536px;
+      height: 960px;
+    }
+    .cap {
+      position: absolute;
+      left: 192px;
+      top: 950px;
+      width: 1536px;
+      font-size: 42px;
+      font-weight: 600;
+    }
+  </style>
+  <div id="root" data-composition-id="app" data-width="1920" data-height="1080">
+    <div id="ap-s1" class="shot"><img src="assets/ui/ui-camara.jpg" alt="Modo cámara de la aplicación" /></div>
+    <div id="ap-s2" class="shot"><img src="assets/ui/ui-chat.jpg" alt="Pestaña Preguntar con una respuesta del modelo" /></div>
+    <div id="ap-s3" class="shot"><img src="assets/ui/ui-explorar.jpg" alt="Explorador de observaciones guardadas" /></div>
+    <div id="ap-c1" class="cap">La cámara reconoce documentos nuevos y repetidos</div>
+    <div id="ap-c2" class="cap">Pregúntale a la imagen: responde con evidencia</div>
+    <div id="ap-c3" class="cap">Todo queda guardado y se puede buscar</div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const pairs = [
+        ["#ap-s1", "#ap-c1", 0],
+        ["#ap-s2", "#ap-c2", 3],
+        ["#ap-s3", "#ap-c3", 6],
+      ];
+      pairs.forEach(([shot, cap, t], i) => {
+        // whip in from the right, sharpen on landing
+        tl.fromTo(shot, { opacity: 0, x: 300, filter: "blur(16px)" }, { opacity: 1, x: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, t);
+        tl.fromTo(cap, { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power4.out" }, t + 0.22);
+        if (i < 2) {
+          tl.fromTo(shot, { x: 0, filter: "blur(0px)", opacity: 1 }, { x: -260, filter: "blur(16px)", opacity: 0, duration: 0.22, ease: "power3.in", immediateRender: false }, t + 2.78);
+          tl.fromTo(cap, { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.18, ease: "power3.in", immediateRender: false }, t + 2.78);
+        } else {
+          // blur swap into the closing card
+          tl.fromTo([shot, cap], { opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power3.in", immediateRender: false }, t + 2.78);
+        }
+      });
+      window.__timelines["app"] = tl;
+    })();
+  </script>
+</template>

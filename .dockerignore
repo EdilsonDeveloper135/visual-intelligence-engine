@@ -9,3 +9,5 @@ data/
 tests/output/
 scripts/spikes/output/
 examples/generated/
+video/
+docs/media/

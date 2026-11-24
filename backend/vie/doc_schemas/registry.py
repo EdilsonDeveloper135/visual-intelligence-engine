@@ -197,7 +197,9 @@ def schema_for_document_type(doc_type: str | None) -> DocSchema:
 _NULLABLE_STR = {"type": ["string", "null"]}
 
 
-def vlm_json_schema(schema: DocSchema, max_items: int = 25) -> dict[str, Any]:
+def vlm_json_schema(schema: DocSchema, max_items: int = 25, compact: bool = False) -> dict[str, Any]:
+    """`compact` drops items, objects, unreadable and inferences: used to retry when a small model
+    runs out of output tokens (items are also extracted by the deterministic rules)."""
     props: dict[str, Any] = {
         "is_document": {"type": "boolean"},
         "document_type": {"type": "string", "enum": DOCUMENT_TYPES},
@@ -215,6 +217,9 @@ def vlm_json_schema(schema: DocSchema, max_items: int = 25) -> dict[str, Any]:
         props["fields"] = {"type": "object", "properties": {f.name: _NULLABLE_STR for f in schema.fields},
                            "required": [f.name for f in schema.fields]}
     required.append("fields")
+    if compact:
+        props["description"] = {"type": "string", "maxLength": 200}
+        return {"type": "object", "properties": props, "required": required}
     if schema.has_items:
         props["items"] = {"type": "array", "maxItems": max_items, "items": {
             "type": "object",

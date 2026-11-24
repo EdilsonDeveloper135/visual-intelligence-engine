@@ -367,7 +367,7 @@ async def handle_interpret(job: Job) -> None:
 
 def _meta_fields(meta: dict) -> dict:
     allowed = {"model", "model_digest", "vlm_tokens", "vlm_status", "vlm_error", "prompt_version",
-               "ocr_truncated_in_prompt", "vlm_ms"}
+               "ocr_truncated_in_prompt", "vlm_ms", "vlm_attempts", "vlm_compact"}
     return {k: v for k, v in meta.items() if k in allowed}
 
 

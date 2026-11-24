@@ -46,17 +46,27 @@ async def interpret(model: str, schema: DocSchema, lines: list[TextLine], jpeg: 
     s = get_settings()
     image_b64 = prepare_image(jpeg, s.vlm_max_side_camera if camera else s.vlm_max_side_document)
     messages, pmeta = extract_messages(schema, lines, image_b64, s.vlm_max_ocr_chars, doc_type_hint)
-    body = {"model": model, "messages": messages, "format": vlm_json_schema(schema), "think": False,
-            "keep_alive": "30m", "options": options()}
     t0 = time.perf_counter()
     meta: dict = {"model": model, "model_digest": await ollama.digest(model), "prompt_version": pmeta["prompt_version"],
                   "ocr_truncated_in_prompt": pmeta["ocr_truncated"]}
-    try:
-        data = await ollama.chat(body)
-    except Exception as exc:  # noqa: BLE001 - reported, not raised
-        meta.update(vlm_status="failed", vlm_error=getattr(exc, "message", str(exc))[:300],
-                    vlm_ms=round((time.perf_counter() - t0) * 1000))
-        return None, meta
+    attempts = []
+    # 1st attempt: full schema. If the small model runs out of output tokens (it sometimes rambles
+    # in item lists), retry ONCE with the compact schema; items still come from the OCR rules.
+    for compact in (False, True):
+        body = {"model": model, "messages": messages, "format": vlm_json_schema(schema, compact=compact),
+                "think": False, "keep_alive": "30m", "options": options(num_predict=640 if compact else None)}
+        try:
+            data = await ollama.chat(body)
+        except Exception as exc:  # noqa: BLE001 - reported, not raised
+            meta.update(vlm_status="failed", vlm_error=getattr(exc, "message", str(exc))[:300],
+                        vlm_ms=round((time.perf_counter() - t0) * 1000), vlm_attempts=attempts)
+            return None, meta
+        attempts.append({"compact": compact, "done_reason": data.get("done_reason"),
+                         "prompt": data.get("prompt_eval_count"), "output": data.get("eval_count")})
+        if data.get("done_reason") != "length":
+            break
+    meta["vlm_attempts"] = attempts
+    meta["vlm_compact"] = len(attempts) > 1
     meta["vlm_ms"] = round((time.perf_counter() - t0) * 1000)
     meta["vlm_tokens"] = {"prompt": data.get("prompt_eval_count"), "output": data.get("eval_count"),
                           "load_ms": round((data.get("load_duration") or 0) / 1e6),

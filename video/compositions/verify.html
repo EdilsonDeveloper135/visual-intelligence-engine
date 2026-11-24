@@ -1,0 +1,327 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("assets/fonts/ahn-latin.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible Mono";
+      src: url("assets/fonts/ahm-latin.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #e4e8ec;
+      color: #1d2733;
+      font-family: "Atkinson Hyperlegible Next", sans-serif;
+    }
+    .w {
+      display: inline-block;
+    }
+    .mono {
+      font-family: "Atkinson Hyperlegible Mono", monospace;
+      font-weight: 500;
+    }
+    #vf-col {
+      position: absolute;
+      left: 120px;
+      top: 0;
+      width: 900px;
+      height: 1080px;
+    }
+    .head {
+      position: absolute;
+      left: 0;
+      top: 130px;
+      width: 900px;
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    #vf-h2 {
+      width: 640px;
+    }
+    #vf-d1 {
+      position: absolute;
+      left: 0;
+      top: 222px;
+      font-size: 38px;
+      font-weight: 500;
+      color: #4a5868;
+    }
+    #vf-rows {
+      position: absolute;
+      left: 0;
+      top: 340px;
+      width: 880px;
+    }
+    .row {
+      position: relative;
+      height: 66px;
+      border-bottom: 2px solid #cdd4db;
+    }
+    .row .lab {
+      position: absolute;
+      left: 0;
+      top: 14px;
+      font-size: 34px;
+      font-weight: 500;
+      color: #4a5868;
+    }
+    .row .val {
+      position: absolute;
+      left: 360px;
+      top: 8px;
+      font-size: 42px;
+    }
+    #vf-r1 .val {
+      color: #2f5dd0;
+    }
+    .num {
+      position: absolute;
+      top: 340px;
+      font-size: 56px;
+      white-space: nowrap;
+    }
+    #vf-n1 {
+      left: 0;
+    }
+    #vf-plus {
+      left: 236px;
+    }
+    #vf-n2 {
+      left: 299px;
+    }
+    #vf-eq {
+      left: 501px;
+    }
+    #vf-n3 {
+      left: 564px;
+    }
+    #vf-ok {
+      position: absolute;
+      left: 800px;
+      top: 344px;
+      width: 60px;
+      height: 60px;
+    }
+    .check {
+      position: absolute;
+      left: 0;
+      height: 60px;
+      font-size: 36px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .check svg {
+      position: absolute;
+      left: 0;
+      top: 4px;
+      width: 40px;
+      height: 40px;
+    }
+    .check span.t {
+      position: absolute;
+      left: 60px;
+      top: 0;
+    }
+    #vf-c1 {
+      top: 470px;
+    }
+    #vf-c2 {
+      top: 540px;
+    }
+    #vf-c3 {
+      top: 610px;
+    }
+    #vf-sum {
+      position: absolute;
+      left: 0;
+      top: 730px;
+      width: 880px;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+    #vf-sum .warn {
+      color: #a86c12;
+    }
+    #vf-doc {
+      position: absolute;
+      left: 1060px;
+      top: 70px;
+      width: 743px;
+      height: 940px;
+      background: #fbfcfd;
+      box-shadow: 0 18px 40px rgba(29, 39, 51, 0.22);
+    }
+    #vf-inner {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1107px;
+      height: 1400px;
+      transform: scale(0.6714);
+      transform-origin: 0 0;
+    }
+    #vf-inner img {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1107px;
+      height: 1400px;
+    }
+    .ob {
+      position: absolute;
+      border: 3px solid #2f5dd0;
+      border-radius: 3px;
+      background: rgba(47, 93, 208, 0.07);
+    }
+    .hl {
+      position: absolute;
+      border: 5px solid #2e7d5b;
+      border-radius: 4px;
+      background: rgba(46, 125, 91, 0.1);
+    }
+    #vf-qr {
+      position: absolute;
+      left: 66px;
+      top: 1107px;
+      width: 243px;
+      height: 221px;
+      border: 7px solid #2f5dd0;
+      border-radius: 6px;
+      background: rgba(47, 93, 208, 0.08);
+    }
+  </style>
+  <div id="root" data-composition-id="verify" data-width="1920" data-height="1080">
+    <div id="vf-doc">
+      <div id="vf-inner">
+        <img src="assets/data/processed.jpg" alt="Factura enderezada" />
+        <!--OCR_BOXES vf-->
+        <div id="vf-ob-00" class="ob" style="left: 64px; top: 64px; width: 573px; height: 38px"></div>
+        <div id="vf-ob-01" class="ob" style="left: 724px; top: 68px; width: 292px; height: 34px"></div>
+        <div id="vf-ob-02" class="ob" style="left: 63px; top: 104px; width: 328px; height: 35px"></div>
+        <div id="vf-ob-03" class="ob" style="left: 723px; top: 111px; width: 295px; height: 34px"></div>
+        <div id="vf-ob-04" class="ob" style="left: 63px; top: 131px; width: 125px; height: 32px"></div>
+        <div id="vf-ob-05" class="ob" style="left: 770px; top: 154px; width: 201px; height: 34px"></div>
+        <div id="vf-ob-06" class="ob" style="left: 63px; top: 236px; width: 228px; height: 33px"></div>
+        <div id="vf-ob-07" class="ob" style="left: 355px; top: 237px; width: 124px; height: 31px"></div>
+        <div id="vf-ob-08" class="ob" style="left: 61px; top: 265px; width: 140px; height: 38px"></div>
+        <div id="vf-ob-09" class="ob" style="left: 354px; top: 267px; width: 282px; height: 33px"></div>
+        <div id="vf-ob-10" class="ob" style="left: 61px; top: 298px; width: 74px; height: 36px"></div>
+        <div id="vf-ob-11" class="ob" style="left: 355px; top: 300px; width: 149px; height: 31px"></div>
+        <div id="vf-ob-12" class="ob" style="left: 61px; top: 329px; width: 119px; height: 37px"></div>
+        <div id="vf-ob-13" class="ob" style="left: 353px; top: 331px; width: 79px; height: 32px"></div>
+        <div id="vf-ob-14" class="ob" style="left: 71px; top: 385px; width: 81px; height: 39px"></div>
+        <div id="vf-ob-15" class="ob" style="left: 169px; top: 387px; width: 101px; height: 35px"></div>
+        <div id="vf-ob-16" class="ob" style="left: 276px; top: 388px; width: 153px; height: 35px"></div>
+        <div id="vf-ob-17" class="ob" style="left: 741px; top: 387px; width: 103px; height: 36px"></div>
+        <div id="vf-ob-18" class="ob" style="left: 891px; top: 389px; width: 110px; height: 35px"></div>
+        <div id="vf-ob-19" class="ob" style="left: 72px; top: 424px; width: 28px; height: 30px"></div>
+        <div id="vf-ob-20" class="ob" style="left: 168px; top: 423px; width: 52px; height: 33px"></div>
+        <div id="vf-ob-21" class="ob" style="left: 275px; top: 424px; width: 249px; height: 33px"></div>
+        <div id="vf-ob-22" class="ob" style="left: 825px; top: 424px; width: 61px; height: 33px"></div>
+        <div id="vf-ob-23" class="ob" style="left: 962px; top: 423px; width: 73px; height: 35px"></div>
+        <div id="vf-ob-24" class="ob" style="left: 72px; top: 458px; width: 29px; height: 32px"></div>
+        <div id="vf-ob-25" class="ob" style="left: 169px; top: 456px; width: 45px; height: 36px"></div>
+        <div id="vf-ob-26" class="ob" style="left: 274px; top: 456px; width: 284px; height: 36px"></div>
+        <div id="vf-ob-27" class="ob" style="left: 813px; top: 458px; width: 72px; height: 33px"></div>
+        <div id="vf-ob-28" class="ob" style="left: 964px; top: 458px; width: 70px; height: 33px"></div>
+        <div id="vf-ob-29" class="ob" style="left: 71px; top: 493px; width: 30px; height: 33px"></div>
+        <div id="vf-ob-30" class="ob" style="left: 167px; top: 492px; width: 53px; height: 34px"></div>
+        <div id="vf-ob-31" class="ob" style="left: 276px; top: 494px; width: 268px; height: 31px"></div>
+        <div id="vf-ob-32" class="ob" style="left: 813px; top: 494px; width: 72px; height: 33px"></div>
+        <div id="vf-ob-33" class="ob" style="left: 963px; top: 494px; width: 72px; height: 33px"></div>
+        <div id="vf-ob-34" class="ob" style="left: 635px; top: 552px; width: 172px; height: 35px"></div>
+        <div id="vf-ob-35" class="ob" style="left: 920px; top: 553px; width: 126px; height: 32px"></div>
+        <div id="vf-ob-36" class="ob" style="left: 635px; top: 584px; width: 143px; height: 34px"></div>
+        <div id="vf-ob-37" class="ob" style="left: 933px; top: 585px; width: 114px; height: 34px"></div>
+        <div id="vf-ob-38" class="ob" style="left: 636px; top: 618px; width: 182px; height: 35px"></div>
+        <div id="vf-ob-39" class="ob" style="left: 919px; top: 617px; width: 128px; height: 35px"></div>
+        <div id="vf-ob-40" class="ob" style="left: 63px; top: 659px; width: 400px; height: 28px"></div>
+        <div id="vf-ob-41" class="ob" style="left: 444px; top: 1270px; width: 433px; height: 31px"></div>
+        <div id="vf-ob-42" class="ob" style="left: 468px; top: 1300px; width: 385px; height: 27px"></div>
+        <!--/OCR_BOXES vf-->
+        <div id="vf-qr"></div>
+        <div id="vf-hl-a" class="hl" style="left: 916px; top: 549px; width: 134px; height: 40px"></div>
+        <div id="vf-hl-b" class="hl" style="left: 929px; top: 581px; width: 122px; height: 42px"></div>
+        <div id="vf-hl-c" class="hl" style="left: 915px; top: 613px; width: 136px; height: 43px"></div>
+      </div>
+    </div>
+    <div id="vf-col">
+      <div id="vf-h1" class="head"><span class="w">Lee</span> <span class="w">también</span> <span class="w">el</span> <span class="w">código</span> <span class="w">QR</span></div>
+      <div id="vf-d1">Trae RUC, serie, montos y fecha en un formato fijo.</div>
+      <div id="vf-rows">
+        <div id="vf-r1" class="row"><span class="lab">RUC del emisor</span><span class="val mono">20526018151</span></div>
+        <div id="vf-r2" class="row"><span class="lab">Serie y número</span><span class="val mono">F001-00000123</span></div>
+        <div id="vf-r3" class="row"><span class="lab">IGV</span><span class="val mono">19.62</span></div>
+        <div id="vf-r4" class="row"><span class="lab">Total</span><span class="val mono">128.62</span></div>
+        <div id="vf-r5" class="row"><span class="lab">Fecha</span><span class="val mono">2026-11-15</span></div>
+        <div id="vf-r6" class="row"><span class="lab">RUC del cliente</span><span class="val mono">20908301669</span></div>
+      </div>
+
+      <div id="vf-h2" class="head"><span class="w">Y</span> <span class="w">hace</span> <span class="w">las</span> <span class="w">cuentas</span> <span class="w">sin</span> <span class="w">el</span> <span class="w">modelo</span></div>
+      <div id="vf-n1" class="num mono">109.00</div>
+      <div id="vf-plus" class="num mono">+</div>
+      <div id="vf-n2" class="num mono">19.62</div>
+      <div id="vf-eq" class="num mono">=</div>
+      <div id="vf-n3" class="num mono">128.62</div>
+      <svg id="vf-ok" viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="#2E7D5B" /><path d="M17 31 L26 40 L44 21" fill="none" stroke="#FBFCFD" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      <div id="vf-c1" class="check"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2E7D5B" /><path d="M11 21 L17 27 L29 14" fill="none" stroke="#FBFCFD" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="t">IGV: el 18 % de 109.00 es 19.62</span></div>
+      <div id="vf-c2" class="check"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2E7D5B" /><path d="M11 21 L17 27 L29 14" fill="none" stroke="#FBFCFD" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="t">RUC del emisor: dígito verificador correcto</span></div>
+      <div id="vf-c3" class="check"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="19" fill="#2E7D5B" /><path d="M11 21 L17 27 L29 14" fill="none" stroke="#FBFCFD" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="t">Montos del QR iguales a los impresos</span></div>
+      <div id="vf-sum">28 comprobaciones:<br />25 correctas y <span class="warn">3 advertencias</span></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      const IN = { opacity: 1, filter: "blur(0px)" };
+      const OUT = { opacity: 0, filter: "blur(8px)" };
+      const hidden = ["#vf-h1", "#vf-d1", "#vf-rows", "#vf-h2", ".num", "#vf-ok", ".check", "#vf-sum", ".hl"];
+      tl.fromTo(hidden, { opacity: 0 }, { opacity: 0, duration: 0.01 }, 0);
+
+      // QR: the OCR boxes step back, the code is located and decoded
+      tl.fromTo("#vf-inner .ob", { opacity: 1 }, { opacity: 0.22, duration: 0.3, ease: "power2.out" }, 0.15);
+      tl.fromTo("#vf-qr", { opacity: 0, scale: 1.15, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.35, ease: "expo.out" }, 0.3);
+      tl.fromTo("#vf-h1", { opacity: 1 }, { opacity: 1, duration: 0.01 }, 0.2);
+      tl.fromTo("#vf-h1 .w", OUT, { ...IN, duration: 0.2, ease: "power4.out", stagger: 0.067 }, 0.2);
+      tl.fromTo("#vf-d1", OUT, { ...IN, duration: 0.2, ease: "power4.out", immediateRender: false }, 0.5);
+      tl.fromTo("#vf-rows", { opacity: 1 }, { opacity: 1, duration: 0.01, immediateRender: false }, 0.85);
+      tl.fromTo("#vf-rows .row", { opacity: 0, filter: "blur(6px)" }, { ...IN, duration: 0.2, ease: "power4.out", stagger: 0.15 }, 0.9);
+      tl.fromTo(["#vf-h1", "#vf-d1", "#vf-rows"], IN, { ...OUT, duration: 0.22, ease: "power3.in", immediateRender: false }, 5.0);
+      tl.fromTo("#vf-qr", { opacity: 1 }, { opacity: 0.22, duration: 0.3, ease: "power2.out", immediateRender: false }, 5.0);
+
+      // arithmetic with the printed numbers
+      tl.fromTo("#vf-h2", { opacity: 1 }, { opacity: 1, duration: 0.01, immediateRender: false }, 5.3);
+      tl.fromTo("#vf-h2 .w", OUT, { ...IN, duration: 0.2, ease: "power4.out", stagger: 0.067 }, 5.3);
+      tl.fromTo(".hl", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out", stagger: 0.1, immediateRender: false }, 5.6);
+      const fly = [
+        ["#vf-n1", 1584, 101],
+        ["#vf-n2", 1294, 122],
+        ["#vf-n3", 1020, 144],
+      ];
+      fly.forEach(([sel, dx, dy], i) => {
+        tl.fromTo(sel, { opacity: 0, x: dx, y: dy, scale: 0.3, transformOrigin: "0% 0%" }, { opacity: 1, x: 0, y: 0, scale: 1, duration: 0.65, ease: "power3.inOut", immediateRender: false }, 5.9 + i * 0.15);
+      });
+      tl.fromTo(["#vf-plus", "#vf-eq"], { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out", immediateRender: false }, 6.55);
+      tl.fromTo("#vf-ok", { opacity: 0, scale: 0.7, transformOrigin: "50% 50%" }, { opacity: 1, scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, 6.8);
+      ["#vf-c1", "#vf-c2", "#vf-c3"].forEach((sel, i) => {
+        tl.fromTo(sel, { opacity: 0, filter: "blur(6px)" }, { ...IN, duration: 0.22, ease: "power4.out", immediateRender: false }, 7.4 + i * 0.5);
+      });
+      tl.fromTo("#vf-sum", { opacity: 0, filter: "blur(8px)" }, { ...IN, duration: 0.25, ease: "power4.out", immediateRender: false }, 9.1);
+
+      // clear the column; the page keeps its dimmed boxes for the next scene
+      tl.fromTo(["#vf-h2", ".num", "#vf-ok", ".check", "#vf-sum"], IN, { ...OUT, duration: 0.25, ease: "power3.in", immediateRender: false }, 12.5);
+      tl.fromTo(".hl", { opacity: 1 }, { opacity: 0, duration: 0.25, ease: "power2.in", immediateRender: false }, 12.5);
+      window.__timelines["verify"] = tl;
+    })();
+  </script>
+</template>

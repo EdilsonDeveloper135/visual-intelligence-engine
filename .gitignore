@@ -24,3 +24,8 @@ examples/generated/
 .DS_Store
 .idea/
 .vscode/
+# HyperFrames video project: local caches, snapshots and renders (the final MP4 lives in docs/media/)
+video/.hyperframes/
+video/renders/
+video/*.mp4
+video/.thumbnails/

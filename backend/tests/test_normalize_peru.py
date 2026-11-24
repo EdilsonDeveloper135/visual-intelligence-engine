@@ -87,3 +87,46 @@ def test_amount_in_words():
     assert parse_amount_in_words("SON: CIENTO VEINTIOCHO CON 62/100 SOLES") == Decimal("128.62")
     assert parse_amount_in_words("SON: CIEN CON 00/100 SOLES") == Decimal("100.00")
     assert parse_amount_in_words("texto cualquiera") is None
+
+
+def test_compact_vlm_schema_drops_long_lists():
+    from vie.doc_schemas.registry import PE_FACTURA, vlm_json_schema
+
+    full = vlm_json_schema(PE_FACTURA)
+    compact = vlm_json_schema(PE_FACTURA, compact=True)
+    assert {"items", "objects", "inferences", "unreadable"} <= set(full["properties"])
+    assert not {"items", "objects", "inferences", "unreadable"} & set(compact["properties"])
+    assert set(compact["required"]) == {"is_document", "document_type", "description", "language", "fields"}
+
+
+def test_vlm_retries_compact_when_output_is_truncated(monkeypatch):
+    import asyncio
+    import io
+    import json
+
+    from PIL import Image
+
+    from vie.clients import ollama
+    from vie.doc_schemas.registry import PE_FACTURA
+    from vie.inference import vlm
+
+    calls = []
+
+    async def fake_chat(body):
+        calls.append(body)
+        if len(calls) == 1:
+            return {"done_reason": "length", "eval_count": 1024, "prompt_eval_count": 2700, "message": {"content": "{"}}
+        out = {"is_document": True, "document_type": "factura", "description": "Factura", "language": "es", "fields": {}}
+        return {"done_reason": "stop", "eval_count": 120, "prompt_eval_count": 2700, "message": {"content": json.dumps(out)}}
+
+    async def fake_digest(_model):
+        return "sha256:test"
+
+    monkeypatch.setattr(ollama, "chat", fake_chat)
+    monkeypatch.setattr(ollama, "digest", fake_digest)
+    buf = io.BytesIO()
+    Image.new("RGB", (64, 64), "white").save(buf, "JPEG")
+    parsed, meta = asyncio.run(vlm.interpret("m", PE_FACTURA, [], buf.getvalue()))
+    assert parsed["document_type"] == "factura"
+    assert meta["vlm_status"] == "done" and meta["vlm_compact"] is True
+    assert "items" in calls[0]["format"]["properties"] and "items" not in calls[1]["format"]["properties"]

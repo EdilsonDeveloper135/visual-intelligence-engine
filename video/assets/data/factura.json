@@ -1,0 +1,958 @@
+{
+ "observation_id": "773302c9-3e9b-467c-9111-7086889afd9a",
+ "status": "completed",
+ "processed_size": [
+  1107,
+  1400
+ ],
+ "steps": [
+  "perspective_correction",
+  "upscale_small_document"
+ ],
+ "quad": [
+  [
+   506,
+   142
+  ],
+  [
+   1122,
+   176
+  ],
+  [
+   1156,
+   1062
+  ],
+  [
+   448,
+   1036
+  ]
+ ],
+ "lines": [
+  {
+   "id": "r_0001",
+   "text": "COMERCIAL ANDINA DEMO S.A.C.",
+   "bbox": [
+    68,
+    68,
+    633,
+    98
+   ]
+  },
+  {
+   "id": "r_0002",
+   "text": "R.U.C. N° 20526018151",
+   "bbox": [
+    728,
+    72,
+    1012,
+    98
+   ]
+  },
+  {
+   "id": "r_0003",
+   "text": "Av. Los Ejemplos 123, Miraflores",
+   "bbox": [
+    67,
+    108,
+    387,
+    135
+   ]
+  },
+  {
+   "id": "r_0004",
+   "text": "FACTURA ELECTRÓNICA",
+   "bbox": [
+    727,
+    115,
+    1014,
+    141
+   ]
+  },
+  {
+   "id": "r_0005",
+   "text": "Lima - Perú",
+   "bbox": [
+    67,
+    135,
+    184,
+    159
+   ]
+  },
+  {
+   "id": "r_0006",
+   "text": "F001-00000123",
+   "bbox": [
+    774,
+    158,
+    967,
+    184
+   ]
+  },
+  {
+   "id": "r_0007",
+   "text": "Fecha de Emlsión:",
+   "bbox": [
+    67,
+    240,
+    287,
+    265
+   ]
+  },
+  {
+   "id": "r_0008",
+   "text": "15/11/2026",
+   "bbox": [
+    359,
+    241,
+    475,
+    264
+   ]
+  },
+  {
+   "id": "r_0009",
+   "text": "Señor(es):",
+   "bbox": [
+    65,
+    269,
+    197,
+    299
+   ]
+  },
+  {
+   "id": "r_0010",
+   "text": "CLIENTEDE PRUEBA E.I.R.L.",
+   "bbox": [
+    358,
+    271,
+    632,
+    296
+   ]
+  },
+  {
+   "id": "r_0011",
+   "text": "RUC:",
+   "bbox": [
+    65,
+    302,
+    131,
+    330
+   ]
+  },
+  {
+   "id": "r_0012",
+   "text": "20908301669",
+   "bbox": [
+    359,
+    304,
+    500,
+    327
+   ]
+  },
+  {
+   "id": "r_0013",
+   "text": "Moneda:",
+   "bbox": [
+    65,
+    333,
+    176,
+    362
+   ]
+  },
+  {
+   "id": "r_0014",
+   "text": "SOLES",
+   "bbox": [
+    357,
+    335,
+    428,
+    359
+   ]
+  },
+  {
+   "id": "r_0015",
+   "text": "Cant.",
+   "bbox": [
+    75,
+    389,
+    148,
+    420
+   ]
+  },
+  {
+   "id": "r_0016",
+   "text": "Unidad",
+   "bbox": [
+    173,
+    391,
+    266,
+    418
+   ]
+  },
+  {
+   "id": "r_0017",
+   "text": "Descripción",
+   "bbox": [
+    280,
+    392,
+    425,
+    419
+   ]
+  },
+  {
+   "id": "r_0018",
+   "text": "P. Unit.",
+   "bbox": [
+    745,
+    391,
+    840,
+    419
+   ]
+  },
+  {
+   "id": "r_0019",
+   "text": "Importe",
+   "bbox": [
+    895,
+    393,
+    997,
+    420
+   ]
+  },
+  {
+   "id": "r_0020",
+   "text": "5",
+   "bbox": [
+    76,
+    428,
+    96,
+    450
+   ]
+  },
+  {
+   "id": "r_0021",
+   "text": "NIU",
+   "bbox": [
+    172,
+    427,
+    216,
+    452
+   ]
+  },
+  {
+   "id": "r_0022",
+   "text": "Lapicero azul punta fina",
+   "bbox": [
+    279,
+    428,
+    520,
+    453
+   ]
+  },
+  {
+   "id": "r_0023",
+   "text": "2.30",
+   "bbox": [
+    829,
+    428,
+    882,
+    453
+   ]
+  },
+  {
+   "id": "r_0024",
+   "text": "11.50",
+   "bbox": [
+    966,
+    427,
+    1031,
+    454
+   ]
+  },
+  {
+   "id": "r_0025",
+   "text": "1",
+   "bbox": [
+    76,
+    462,
+    97,
+    486
+   ]
+  },
+  {
+   "id": "r_0026",
+   "text": "zz",
+   "bbox": [
+    173,
+    460,
+    210,
+    488
+   ]
+  },
+  {
+   "id": "r_0027",
+   "text": "Instalación de punto de red",
+   "bbox": [
+    278,
+    460,
+    554,
+    488
+   ]
+  },
+  {
+   "id": "r_0028",
+   "text": "85.00",
+   "bbox": [
+    817,
+    462,
+    881,
+    487
+   ]
+  },
+  {
+   "id": "r_0029",
+   "text": "85.00",
+   "bbox": [
+    968,
+    462,
+    1030,
+    487
+   ]
+  },
+  {
+   "id": "r_0030",
+   "text": "1",
+   "bbox": [
+    75,
+    497,
+    97,
+    522
+   ]
+  },
+  {
+   "id": "r_0031",
+   "text": "NIU",
+   "bbox": [
+    171,
+    496,
+    216,
+    522
+   ]
+  },
+  {
+   "id": "r_0032",
+   "text": "Cuaderno A4 cuadriculado",
+   "bbox": [
+    280,
+    498,
+    540,
+    521
+   ]
+  },
+  {
+   "id": "r_0033",
+   "text": "12.50",
+   "bbox": [
+    817,
+    498,
+    881,
+    523
+   ]
+  },
+  {
+   "id": "r_0034",
+   "text": "12.50",
+   "bbox": [
+    967,
+    498,
+    1031,
+    523
+   ]
+  },
+  {
+   "id": "r_0035",
+   "text": "Op. Gravada:",
+   "bbox": [
+    639,
+    556,
+    803,
+    583
+   ]
+  },
+  {
+   "id": "r_0036",
+   "text": "S/ 109.00",
+   "bbox": [
+    924,
+    557,
+    1042,
+    581
+   ]
+  },
+  {
+   "id": "r_0037",
+   "text": "IGV (18%):",
+   "bbox": [
+    639,
+    588,
+    774,
+    614
+   ]
+  },
+  {
+   "id": "r_0038",
+   "text": "S/ 19.62",
+   "bbox": [
+    937,
+    589,
+    1043,
+    615
+   ]
+  },
+  {
+   "id": "r_0039",
+   "text": "Importe Total:",
+   "bbox": [
+    640,
+    622,
+    814,
+    649
+   ]
+  },
+  {
+   "id": "r_0040",
+   "text": "S/ 128.62",
+   "bbox": [
+    923,
+    621,
+    1043,
+    648
+   ]
+  },
+  {
+   "id": "r_0041",
+   "text": "SON: CIENTO VEINTIOCHO CON 62/100 SOLES",
+   "bbox": [
+    67,
+    663,
+    459,
+    683
+   ]
+  },
+  {
+   "id": "r_0042",
+   "text": "Representación impresa de la Factura Electrónica",
+   "bbox": [
+    448,
+    1274,
+    873,
+    1297
+   ]
+  },
+  {
+   "id": "r_0043",
+   "text": "Documento sintético de prueba - sin validez",
+   "bbox": [
+    472,
+    1304,
+    849,
+    1323
+   ]
+  }
+ ],
+ "codes": [
+  {
+   "bbox": [
+    78,
+    1119,
+    297,
+    1316
+   ],
+   "text": "20526018151|01|F001|00000123|19.62|128.62|2026-11-15|6|20908301669|c3ludGhldGljLXRlc3QtaGFzaA==|"
+  }
+ ],
+ "fields": {
+  "igv": {
+   "value": "19.62",
+   "source": "qr",
+   "bbox": [
+    937,
+    589,
+    1043,
+    615
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "19.62"
+    },
+    {
+     "source": "ocr_rules",
+     "value": "19.62"
+    },
+    {
+     "source": "vlm",
+     "value": "19.62"
+    }
+   ]
+  },
+  "total": {
+   "value": "128.62",
+   "source": "qr",
+   "bbox": [
+    923,
+    621,
+    1043,
+    648
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "128.62"
+    },
+    {
+     "source": "ocr_rules",
+     "value": "128.62"
+    },
+    {
+     "source": "vlm",
+     "value": "128.62"
+    }
+   ]
+  },
+  "currency": {
+   "value": "PEN",
+   "source": "ocr_rules",
+   "bbox": [
+    357,
+    335,
+    428,
+    359
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "PEN"
+    },
+    {
+     "source": "vlm",
+     "value": "PEN"
+    }
+   ]
+  },
+  "igv_rate": {
+   "value": "18",
+   "source": "ocr_rules",
+   "bbox": [
+    639,
+    588,
+    774,
+    614
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "18"
+    },
+    {
+     "source": "vlm",
+     "value": "18"
+    }
+   ]
+  },
+  "issue_date": {
+   "value": "2026-11-15",
+   "source": "qr",
+   "bbox": [
+    359,
+    241,
+    475,
+    264
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "2026-11-15"
+    },
+    {
+     "source": "vlm",
+     "value": "2026-11-15"
+    }
+   ]
+  },
+  "issuer_ruc": {
+   "value": "20526018151",
+   "source": "qr",
+   "bbox": [
+    728,
+    72,
+    1012,
+    98
+   ],
+   "needs_review": true,
+   "reasons": [
+    "Las fuentes discrepan (qr=20526018151, ocr_rules=20526018151, vlm=20908301669)."
+   ],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "20526018151"
+    },
+    {
+     "source": "ocr_rules",
+     "value": "20526018151"
+    },
+    {
+     "source": "vlm",
+     "value": "20908301669"
+    }
+   ]
+  },
+  "issuer_name": {
+   "value": "COMERCIAL ANDINA DEMO S.A.C.",
+   "source": "ocr_rules",
+   "bbox": [
+    68,
+    68,
+    633,
+    98
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "COMERCIAL ANDINA DEMO S.A.C."
+    },
+    {
+     "source": "vlm",
+     "value": "COMERCIAL ANDINA DEMO S.A.C."
+    }
+   ]
+  },
+  "customer_doc": {
+   "value": "20908301669",
+   "source": "qr",
+   "bbox": [
+    359,
+    304,
+    500,
+    327
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "20908301669"
+    },
+    {
+     "source": "vlm",
+     "value": "20908301669"
+    }
+   ]
+  },
+  "serie_numero": {
+   "value": "F001-00000123",
+   "source": "qr",
+   "bbox": [
+    774,
+    158,
+    967,
+    184
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "qr",
+     "value": "F001-00000123"
+    },
+    {
+     "source": "ocr_rules",
+     "value": "F001-00000123"
+    },
+    {
+     "source": "vlm",
+     "value": "F001-00000123"
+    }
+   ]
+  },
+  "customer_name": {
+   "value": "CLIENTEDE PRUEBA E.I.R.L.",
+   "source": "ocr_rules",
+   "bbox": [
+    358,
+    271,
+    632,
+    296
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "CLIENTEDE PRUEBA E.I.R.L."
+    },
+    {
+     "source": "vlm",
+     "value": "CLIENTE DE PRUEBA E.I.R.L."
+    }
+   ]
+  },
+  "issuer_address": {
+   "value": "Av. Los Ejemplos 123, Miraflores",
+   "source": "ocr_rules",
+   "bbox": [
+    67,
+    108,
+    387,
+    135
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "Av. Los Ejemplos 123, Miraflores"
+    },
+    {
+     "source": "vlm",
+     "value": "Av. Los Ejemplos 123, Miraflores, Lima - Perú"
+    }
+   ]
+  },
+  "taxable_amount": {
+   "value": "109.00",
+   "source": "ocr_rules",
+   "bbox": [
+    924,
+    557,
+    1042,
+    581
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "109.00"
+    },
+    {
+     "source": "vlm",
+     "value": "109.00"
+    }
+   ]
+  },
+  "amount_in_words": {
+   "value": "SON: CIENTO VEINTIOCHO CON 62/100 SOLES",
+   "source": "ocr_rules",
+   "bbox": [
+    67,
+    663,
+    459,
+    683
+   ],
+   "needs_review": false,
+   "reasons": [],
+   "sources": [
+    {
+     "source": "ocr_rules",
+     "value": "SON: CIENTO VEINTIOCHO CON 62/100 SOLES"
+    },
+    {
+     "source": "vlm",
+     "value": "CIENTO VEINTIOCHO CON 62/100 SOLES"
+    }
+   ]
+  }
+ },
+ "items": [
+  {
+   "description": "Lapicero azul punta fina",
+   "amount": "11.50"
+  },
+  {
+   "description": "Instalación de punto de red",
+   "amount": "85.00"
+  },
+  {
+   "description": "Cuaderno A4 cuadriculado",
+   "amount": "12.50"
+  }
+ ],
+ "checks": [
+  {
+   "id": "ruc_issuer",
+   "status": "pass",
+   "message": "RUC del emisor válido (módulo 11)."
+  },
+  {
+   "id": "customer_doc",
+   "status": "pass",
+   "message": "RUC del cliente válido (módulo 11)."
+  },
+  {
+   "id": "serie_vs_type",
+   "status": "pass",
+   "message": "La serie es coherente con el tipo de documento."
+  },
+  {
+   "id": "customer_doc_vs_type",
+   "status": "pass",
+   "message": "Documento del cliente coherente con el tipo de comprobante."
+  },
+  {
+   "id": "item_line_1",
+   "status": "pass",
+   "message": "Ítem 1: 5 × 2.30 = 11.50"
+  },
+  {
+   "id": "item_line_2",
+   "status": "pass",
+   "message": "Ítem 2: 1 × 85.00 = 85.00"
+  },
+  {
+   "id": "item_line_3",
+   "status": "pass",
+   "message": "Ítem 3: 1 × 12.50 = 12.50"
+  },
+  {
+   "id": "items_sum",
+   "status": "pass",
+   "message": "La suma de ítems (109.00) coincide con la base imponible (precios sin IGV)."
+  },
+  {
+   "id": "totals_sum",
+   "status": "pass",
+   "message": "Total verificado: taxable_amount=109.00 + igv=19.62 = 128.62"
+  },
+  {
+   "id": "tax_rate",
+   "status": "pass",
+   "message": "Tasa observada 18.00% coincide con «Tasa general (IGV 16% + IPM 2%)» (18%)."
+  },
+  {
+   "id": "tax_rate_printed",
+   "status": "pass",
+   "message": "La tasa impresa (18%) es coherente con los importes."
+  },
+  {
+   "id": "issue_date_valid",
+   "status": "pass",
+   "message": "Fecha de emisión válida (2026-11-15)."
+  },
+  {
+   "id": "currency",
+   "status": "pass",
+   "message": "Moneda coherente: PEN."
+  },
+  {
+   "id": "qr_vs_ocr_rules_issuer_ruc",
+   "status": "pass",
+   "message": "issuer_ruc: QR y ocr_rules coinciden (20526018151)."
+  },
+  {
+   "id": "qr_vs_vlm_issuer_ruc",
+   "status": "warn",
+   "message": "issuer_ruc: el modelo leyó 20908301669 pero el QR indica 20526018151 (probable error de lectura del modelo; se conserva el valor del QR)."
+  },
+  {
+   "id": "qr_vs_ocr_rules_serie_numero",
+   "status": "pass",
+   "message": "serie_numero: QR y ocr_rules coinciden (F001-00000123)."
+  },
+  {
+   "id": "qr_vs_vlm_serie_numero",
+   "status": "pass",
+   "message": "serie_numero: QR y vlm coinciden (F001-00000123)."
+  },
+  {
+   "id": "qr_vs_ocr_rules_total",
+   "status": "pass",
+   "message": "total: QR y ocr_rules coinciden (128.62)."
+  },
+  {
+   "id": "qr_vs_vlm_total",
+   "status": "pass",
+   "message": "total: QR y vlm coinciden (128.62)."
+  },
+  {
+   "id": "qr_vs_ocr_rules_igv",
+   "status": "pass",
+   "message": "igv: QR y ocr_rules coinciden (19.62)."
+  },
+  {
+   "id": "qr_vs_vlm_igv",
+   "status": "pass",
+   "message": "igv: QR y vlm coinciden (19.62)."
+  },
+  {
+   "id": "qr_vs_vlm_issue_date",
+   "status": "pass",
+   "message": "issue_date: QR y vlm coinciden (2026-11-15)."
+  },
+  {
+   "id": "qr_vs_vlm_customer_doc",
+   "status": "pass",
+   "message": "customer_doc: QR y vlm coinciden (20908301669)."
+  },
+  {
+   "id": "sources_issuer_ruc",
+   "status": "warn",
+   "message": "issuer_ruc: Las fuentes discrepan (qr=20526018151, ocr_rules=20526018151, vlm=20908301669)."
+  },
+  {
+   "id": "duplicate",
+   "status": "warn",
+   "message": "Ya existe(n) 10 registro(s) con el mismo RUC y serie-número (6e6bced0, f6204d94, d1e15685, ed6a071e, a6d14b35)."
+  },
+  {
+   "id": "document_type_agreement",
+   "status": "pass",
+   "message": "Reglas y modelo coinciden en el tipo: factura."
+  },
+  {
+   "id": "prompt_injection",
+   "status": "pass",
+   "message": "No se detectaron textos con forma de instrucción."
+  },
+  {
+   "id": "amount_in_words",
+   "status": "pass",
+   "message": "El importe en letras (128.62) coincide con el total."
+  }
+ ],
+ "validation": "valid_with_warnings",
+ "document_type": "factura",
+ "description": "Factura electrónica de COMERCIAL ANDINA DEMO S.A.C. emitida el 15/11/2026, con un total de S/ 128.62, que incluye una base imponible de S/ 109.00, IGV de S/ 19.62 y descuentos de S/ 12.50.",
+ "timings": {
+  "vlm_ms": 28201,
+  "stage1_ms": 1176,
+  "stage2_ms": 28249,
+  "vision_ocr_ms": 1000,
+  "vision_codes_ms": 14,
+  "vision_total_ms": 1123,
+  "vision_decode_ms": 24,
+  "vision_encode_ms": 10,
+  "vision_quality_ms": 16,
+  "vision_preprocess_ms": 31
+ },
+ "tokens": {
+  "output": 772,
+  "prompt": 2773,
+  "eval_ms": 20839,
+  "load_ms": 3,
+  "prompt_ms": 7296,
+  "done_reason": "stop"
+ }
+}

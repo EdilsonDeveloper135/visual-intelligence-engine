@@ -3,6 +3,7 @@
 ## Precisión
 
 - **Modelo de 2B en CPU.** Comete errores de lectura (en las pruebas confundió el RUC del cliente con el del emisor y leyó mal totales en fotos con perspectiva) y sus descripciones pueden ser imprecisas (describió una escena sin documento como «un icono con un ojo»). Por diseño, el QR y las reglas tienen prioridad, las discrepancias se marcan para revisión y la validación no depende del modelo. Más RAM permite `qwen3-vl:4b-instruct` u `8b-instruct`.
+- **Respuestas truncadas:** si el modelo agota los tokens de salida, se reintenta una vez con un esquema compacto sin ítems, objetos ni inferencias; si vuelve a truncarse, la observación queda `partial` con OCR, reglas y validación, y se puede pedir «Interpretar de nuevo».
 - **Citas en el chat:** el modelo 2B rara vez incluye las referencias `[r_0012]` aunque se le pide; las respuestas no siempre son verificables por región.
 - **OCR medido sobre documentos sintéticos.** El 100 % de acierto en tokens clave corresponde a documentos generados con tipografía limpia (incluidas fotos degradadas simuladas). La precisión con fotos reales, papel térmico desvaído o escritura a mano no está medida; conviene evaluar con documentos reales del usuario.
 - **Tablas complejas:** los ítems se extraen con reglas de tabla para comprobantes peruanos y con el modelo; no hay reconocimiento estructural de tablas arbitrarias (rapid-table/PP-Structure no están integrados en el perfil lite).

@@ -1,0 +1,61 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Atkinson Hyperlegible Next";
+      src: url("assets/fonts/ahn-latin.woff2") format("woff2");
+      font-weight: 200 800;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #2f5dd0;
+      color: #fbfcfd;
+      font-family: "Atkinson Hyperlegible Next", sans-serif;
+    }
+    .w {
+      display: inline-block;
+    }
+    #rv-title {
+      position: absolute;
+      left: 140px;
+      top: 360px;
+      font-size: 116px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+    #rv-sub {
+      position: absolute;
+      left: 144px;
+      top: 530px;
+      font-size: 56px;
+      font-weight: 500;
+      color: #e8eefb;
+    }
+    #rv-wipe {
+      position: absolute;
+      inset: 0;
+      background: #e4e8ec;
+      clip-path: inset(100% 0% 0% 0%);
+    }
+  </style>
+  <div id="root" data-composition-id="reveal" data-width="1920" data-height="1080">
+    <div id="rv-title"><span class="w">Visual</span> <span class="w">Intelligence</span> <span class="w">Engine</span></div>
+    <div id="rv-sub"><span class="w">No</span> <span class="w">se</span> <span class="w">fía</span> <span class="w">de</span> <span class="w">una</span> <span class="w">sola</span> <span class="w">lectura.</span></div>
+    <div id="rv-wipe"></div>
+  </div>
+  <script>
+    (function () {
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#rv-title .w", { opacity: 0, filter: "blur(8px)" }, { opacity: 1, filter: "blur(0px)", duration: 0.22, ease: "power4.out", stagger: 0.09 }, 0.1);
+      tl.fromTo("#rv-sub .w", { opacity: 0.25 }, { opacity: 1, duration: 0.12, ease: "power2.out", stagger: 0.08 }, 0.75);
+      tl.fromTo("#rv-sub", { opacity: 0 }, { opacity: 1, duration: 0.15, ease: "power2.out" }, 0.7);
+      // the desk rises from below and takes the frame back
+      tl.fromTo("#rv-wipe", { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "power3.inOut" }, 3.45);
+      window.__timelines["reveal"] = tl;
+    })();
+  </script>
+</template>
