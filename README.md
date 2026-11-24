@@ -8,7 +8,7 @@ Todo corre en Docker, sin GPU y sin servicios externos: después de la instalaci
 
 [![Video explicativo: una factura, de foto a dato verificado](docs/media/vie-explicacion-poster.jpg)](docs/media/vie-explicacion.mp4)
 
-▶ **[Ver el video (MP4, 1920×1080, 63 s, sin sonido)](docs/media/vie-explicacion.mp4)**
+▶ **[Descargar el video (MP4, 1920×1080, 63 s, 16 MB, sin sonido)](docs/media/vie-explicacion.mp4)** — GitHub no reproduce en línea los MP4 guardados en el repositorio: se abre con «View raw» o «Download» y cualquier reproductor.
 
 El video sigue **una factura real del sistema** de principio a fin: todos los números, cajas y capturas que aparecen salen de una observación procesada por el motor (`773302c9…`), incluido un error real del modelo de visión. Está hecho con [HyperFrames](https://hyperframes.heygen.com) (HTML renderizado a video); el proyecto editable está en [`video/`](video/).
 
