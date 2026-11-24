@@ -1,0 +1,86 @@
+[
+  {
+    "sample": "pagina_en_blanco.png",
+    "side": 1024,
+    "image_px": [
+      724,
+      1024
+    ],
+    "wall_s": 28.0,
+    "load_s": 0.0,
+    "prompt_tokens": 1215,
+    "prompt_s": 26.6,
+    "eval_tokens": 88,
+    "eval_s": 1.4,
+    "json_valid": true,
+    "truncated": false,
+    "doc_type": "no_documento",
+    "ruc_ok": false,
+    "total_ok": false,
+    "serie_ok": false,
+    "non_null_fields": 0,
+    "extracted": {
+      "issuer_ruc": null,
+      "serie_numero": null,
+      "issue_date": null,
+      "total": null,
+      "description": ""
+    }
+  },
+  {
+    "sample": "escena_sin_documento.jpg",
+    "side": 1024,
+    "image_px": [
+      1024,
+      768
+    ],
+    "wall_s": 36.5,
+    "load_s": 0.0,
+    "prompt_tokens": 1198,
+    "prompt_s": 27.8,
+    "eval_tokens": 488,
+    "eval_s": 8.7,
+    "json_valid": true,
+    "truncated": false,
+    "doc_type": "no_documento",
+    "ruc_ok": false,
+    "total_ok": false,
+    "serie_ok": false,
+    "non_null_fields": 0,
+    "extracted": {
+      "issuer_ruc": null,
+      "serie_numero": null,
+      "issue_date": null,
+      "total": null,
+      "description": "Ilustración de un diseño de icono con un ojo y un rectángulo negro sobre un fondo marrón con textura."
+    }
+  },
+  {
+    "sample": "boleta_ok.png",
+    "side": 1024,
+    "image_px": [
+      724,
+      1024
+    ],
+    "wall_s": 32.6,
+    "load_s": 0.0,
+    "prompt_tokens": 1215,
+    "prompt_s": 27.6,
+    "eval_tokens": 299,
+    "eval_s": 4.9,
+    "json_valid": true,
+    "truncated": false,
+    "doc_type": "boleta",
+    "ruc_ok": true,
+    "total_ok": true,
+    "serie_ok": true,
+    "non_null_fields": 5,
+    "extracted": {
+      "issuer_ruc": "10390996034",
+      "serie_numero": "B002-00004567",
+      "issue_date": "02/11/2026",
+      "total": "S/ 161.00",
+      "description": "BOLETA DE VENTA ELECTRÓNICA"
+    }
+  }
+]

@@ -1,0 +1,29 @@
+[project]
+name = "vie-tests"
+version = "1.0.0"
+description = "Synthetic data generator, system, security and offline tests for the Visual Intelligence Engine"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pillow==13.0.0",
+    "numpy==2.5.5",
+    "opencv-python-headless==4.14.0.94",
+    "segno==1.6.6",
+    "reportlab==5.1.0",
+    "pytest==9.2.0",
+    "pytest-timeout==2.4.0",
+    "httpx==0.28.1",
+    "websockets==17.4",
+    "pyyaml==6.0.4",
+    "openpyxl==3.1.5",
+]
+
+[tool.uv]
+package = false
+environments = ["sys_platform == 'linux'"]
+
+[tool.pytest.ini_options]
+testpaths = ["system"]
+markers = [
+    "slow: needs the multimodal model (tens of seconds per test)",
+    "destructive: stops/starts containers (run only through scripts/)",
+]

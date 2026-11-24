@@ -1,0 +1,150 @@
+# =============================================================================
+# Visual Intelligence Engine — Docker Compose (profile "lite", default)
+#
+#   make install   -> INSTALL PHASE (Internet): build images, pull models
+#   make up        -> RUN PHASE (offline): docker compose up -d --pull never --no-build
+#
+# Only the frontend publishes a port, and only on ${VIE_BIND_ADDRESS}.
+# All internal networks are `internal: true` (no Internet egress at runtime).
+# =============================================================================
+name: vie
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-hardening: &hardening
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  restart: unless-stopped
+  logging: *logging
+
+services:
+  # ---------------------------------------------------------------------------
+  # Vision engine + OCR engine (layers A/B/C). Decodes UNTRUSTED media.
+  # No database access, no secrets, no egress, read-only root filesystem.
+  # ---------------------------------------------------------------------------
+  vision:
+    <<: *hardening
+    build:
+      context: services/vision
+      target: runtime
+    image: vie/vision:1.0.0
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,uid=10001,gid=10001,mode=1700
+    environment:
+      VIE_OCR_MODEL_SIZE: ${VIE_OCR_MODEL_SIZE:-small}
+      VIE_OCR_THREADS: ${VIE_OCR_THREADS:-3}
+      OMP_NUM_THREADS: ${VIE_OCR_THREADS:-3}
+      VIE_MAX_IMAGE_PIXELS: ${VIE_MAX_IMAGE_PIXELS:-120000000}
+      VIE_WORK_IMAGE_MAX_SIDE: ${VIE_WORK_IMAGE_MAX_SIDE:-3000}
+      VIE_MAX_PDF_PAGES: ${VIE_MAX_PDF_PAGES:-30}
+      VIE_MAX_UPLOAD_MB: ${VIE_MAX_VIDEO_MB:-100}
+      VIE_LOG_LEVEL: ${VIE_LOG_LEVEL:-INFO}
+    networks:
+      - ml
+    deploy:
+      resources:
+        limits:
+          cpus: "${VIE_VISION_CPUS:-3}"
+          memory: ${VIE_VISION_MEM:-768m}
+          pids: 256
+    memswap_limit: ${VIE_VISION_MEM:-768m}
+    oom_score_adj: 800
+
+  # ---------------------------------------------------------------------------
+  # Multimodal inference (layer D). Non-root derived image, no egress.
+  # ---------------------------------------------------------------------------
+  ollama:
+    <<: *hardening
+    build:
+      context: services/ollama
+      args:
+        OLLAMA_IMAGE: ollama/ollama:0.40.17@sha256:ccc42bcd3d5fcf7ab0d532b300382154e1a4da56fc666bdb313b78ebdd912754
+    image: vie/ollama:0.40.17
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,uid=10001,gid=10001,mode=1700
+    environment:
+      OLLAMA_KEEP_ALIVE: ${OLLAMA_KEEP_ALIVE:-30m}
+      OLLAMA_CONTEXT_LENGTH: ${VIE_VLM_NUM_CTX:-4096}
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_MAX_QUEUE: "16"
+      OLLAMA_FLASH_ATTENTION: ${OLLAMA_FLASH_ATTENTION:-0}
+      OLLAMA_KV_CACHE_TYPE: ${OLLAMA_KV_CACHE_TYPE:-f16}
+      OLLAMA_NO_CLOUD: "1"
+      # Passed through to the embedded llama-server:
+      LLAMA_ARG_THREADS: ${VIE_VLM_NUM_THREAD:-6}
+      LLAMA_ARG_THREADS_BATCH: ${VIE_VLM_NUM_THREAD:-6}
+      LLAMA_ARG_CACHE_RAM: "0"   # no RAM prompt cache (it would grow up to 8 GB)
+      VIE_VLM_MODEL: ${VIE_VLM_MODEL:-qwen3-vl:2b-instruct}
+    volumes:
+      - vie_ollama:/home/ollama/.ollama
+    networks:
+      - ml
+    deploy:
+      resources:
+        limits:
+          cpus: "${VIE_OLLAMA_CPUS:-6}"
+          memory: ${VIE_OLLAMA_MEM:-3328m}
+          pids: 512
+    memswap_limit: ${VIE_OLLAMA_MEM:-3328m}
+    oom_score_adj: 1000
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/vie-healthcheck"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+      start_period: 60s
+
+  # ---------------------------------------------------------------------------
+  # INSTALL PHASE ONLY: downloads models into the shared volume.
+  #   docker compose --profile setup run --rm model-init
+  # ---------------------------------------------------------------------------
+  model-init:
+    image: vie/ollama:0.40.17
+    profiles: ["setup"]
+    entrypoint: ["/usr/local/bin/vie-model-init"]
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,uid=10001,gid=10001,mode=1700
+    environment:
+      VIE_VLM_MODELS_TO_PULL: ${VIE_VLM_MODELS_TO_PULL:-qwen3-vl:2b-instruct}
+      OLLAMA_NO_CLOUD: "1"
+    volumes:
+      - vie_ollama:/home/ollama/.ollama
+    networks:
+      - setup
+    restart: "no"
+    logging: *logging
+
+networks:
+  # Only network with a gateway at runtime; used by the frontend to publish its port.
+  edge:
+    name: vie_edge
+  app:
+    name: vie_app
+    internal: true
+  core:
+    name: vie_core
+    internal: true
+  ml:
+    name: vie_ml
+    internal: true
+  # Install phase only (model-init): has Internet access.
+  setup:
+    name: vie_setup
+
+volumes:
+  vie_ollama:
+    name: vie_ollama

@@ -1,0 +1,134 @@
+[
+  {
+    "sample": "factura_ok.png",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 43,
+    "mean_score": 0.994,
+    "ocr_ms": 858,
+    "total_ms": 935,
+    "wall_s": 0.94,
+    "preprocess": [],
+    "quality_flags": [],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  },
+  {
+    "sample": "boleta_ok.png",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "8/8",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 37,
+    "mean_score": 0.996,
+    "ocr_ms": 840,
+    "total_ms": 922,
+    "wall_s": 0.92,
+    "preprocess": [],
+    "quality_flags": [],
+    "codes": [
+      "10390996034|03|B002|00004567|24.56|161.0"
+    ]
+  },
+  {
+    "sample": "factura_rotada_7.jpg",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 43,
+    "mean_score": 0.995,
+    "ocr_ms": 894,
+    "total_ms": 1004,
+    "wall_s": 1.01,
+    "preprocess": [
+      "deskew"
+    ],
+    "quality_flags": [],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  },
+  {
+    "sample": "factura_foto_perspectiva.jpg",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "4/5",
+    "lines": 42,
+    "mean_score": 0.991,
+    "ocr_ms": 717,
+    "total_ms": 784,
+    "wall_s": 0.79,
+    "preprocess": [
+      "perspective_correction"
+    ],
+    "quality_flags": [],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  },
+  {
+    "sample": "factura_desenfocada.jpg",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 43,
+    "mean_score": 0.982,
+    "ocr_ms": 825,
+    "total_ms": 1004,
+    "wall_s": 1.01,
+    "preprocess": [
+      "illumination_and_contrast"
+    ],
+    "quality_flags": [
+      "overexposed",
+      "low_contrast"
+    ],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  },
+  {
+    "sample": "factura_poca_luz.jpg",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 43,
+    "mean_score": 0.992,
+    "ocr_ms": 860,
+    "total_ms": 1012,
+    "wall_s": 1.02,
+    "preprocess": [
+      "illumination_and_contrast"
+    ],
+    "quality_flags": [
+      "low_contrast"
+    ],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  },
+  {
+    "sample": "factura_ruido_jpeg.jpg",
+    "config": "small/multi_v6/pre=1",
+    "tokens_found": "9/9",
+    "missing": [],
+    "accents_ok": "5/5",
+    "lines": 43,
+    "mean_score": 0.991,
+    "ocr_ms": 850,
+    "total_ms": 929,
+    "wall_s": 0.93,
+    "preprocess": [],
+    "quality_flags": [],
+    "codes": [
+      "20526018151|01|F001|00000123|19.62|128.6"
+    ]
+  }
+]

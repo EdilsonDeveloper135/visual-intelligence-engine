@@ -1,0 +1,30 @@
+[project]
+name = "vie-vision"
+version = "1.0.0"
+description = "Vision engine: untrusted-media decoding, preprocessing, quality, OCR (RapidOCR + PaddleOCR PP-OCRv6 ONNX), QR/barcodes"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi==0.165.0",
+    "uvicorn==0.54.0",
+    "pydantic==2.14.4",
+    "pydantic-settings==2.16.3",
+    "python-multipart==0.0.34",
+    "numpy==2.5.5",
+    "opencv-python-headless==4.14.0.94",
+    "pillow==13.0.0",
+    "onnxruntime==1.32.0",
+    "rapidocr==3.10.0",
+    "zxing-cpp==3.1.1",
+    "pypdfium2==5.15.2",
+]
+
+[dependency-groups]
+dev = ["pytest==9.2.0", "httpx==0.28.1", "segno==1.6.6"]
+
+[tool.uv]
+package = false
+environments = ["sys_platform == 'linux'"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

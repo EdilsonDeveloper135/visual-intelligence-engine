@@ -1,0 +1,11 @@
+**/.git
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.venv
+**/dist
+.env
+data/
+tests/output/
+scripts/spikes/output/
+examples/generated/
