@@ -26,6 +26,8 @@ def sniff(data: bytes) -> str | None:
     return None
 
 
-SUPPORTED_UPLOAD = {"image/png", "image/jpeg", "image/webp", "application/pdf"}
+VIDEO_TYPES = {"video/mp4", "video/webm", "video/quicktime"}
+SUPPORTED_UPLOAD = {"image/png", "image/jpeg", "image/webp", "application/pdf"} | VIDEO_TYPES
 EXTENSIONS = {"image/png": {".png"}, "image/jpeg": {".jpg", ".jpeg", ".jfif"}, "image/webp": {".webp"},
-              "application/pdf": {".pdf"}}
+              "application/pdf": {".pdf"}, "video/mp4": {".mp4", ".m4v"}, "video/webm": {".webm"},
+              "video/quicktime": {".mov", ".mp4"}}

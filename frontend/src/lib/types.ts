@@ -155,6 +155,7 @@ export interface ObservationSummary {
   thumbnail_asset_id: string | null;
   camera_session_id: string | null;
   supersedes_id: string | null;
+  parent_id?: string | null;
   repeat_count: number;
   model_name: string | null;
   processing_ms: number | null;

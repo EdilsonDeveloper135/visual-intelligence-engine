@@ -17,6 +17,7 @@ type Msg =
   | { type: "document_detected" }
   | { type: "analyze_queued"; id: string }
   | { type: "event"; event: { type: string; message: string; observation_id: string } }
+  | { type: "stats"; stats: Record<string, number> }
   | { type: "error"; message: string };
 
 const ACTION_LABEL: Record<string, string> = {
@@ -57,6 +58,9 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
   const streamRef = useRef<MediaStream | null>(null);
   const inFlight = useRef(false);
   const lastSig = useRef<Uint8ClampedArray | null>(null);
+  const lastAction = useRef<string>("stabilizing");
+  const lastSentAt = useRef(0);
+  const [skipped, setSkipped] = useState(0);
   const timer = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
 
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
@@ -80,6 +84,7 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
     streamRef.current = null;
     inFlight.current = false;
     lastSig.current = null;
+    lastAction.current = "stabilizing";
     setRunning(false);
     setStatus("La cámara está apagada.");
   }, []);
@@ -92,7 +97,11 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
     if (!video || !ws || ws.readyState !== WebSocket.OPEN || video.readyState < 2) return;
     if (inFlight.current) return; // one frame in flight (backpressure)
     const sig = signature(video, sigRef.current);
-    if (sig && lastSig.current && meanDiff(sig, lastSig.current) < 1.2) {
+    // Skip near-identical frames locally ONLY when the server already holds this scene;
+    // while it is stabilising / throttled / busy it needs follow-up frames. Send one every 10 s anyway.
+    const serverSettled = ["repeated", "ignored"].includes(lastAction.current);
+    if (sig && lastSig.current && serverSettled && meanDiff(sig, lastSig.current) < 0.6 && Date.now() - lastSentAt.current < 10_000) {
+      setSkipped((n) => n + 1);
       setStatus(ACTION_LABEL.skipped_local);
       return;
     }
@@ -109,6 +118,7 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
         }
         blob.arrayBuffer().then((buf) => {
           ws.send(buf);
+          lastSentAt.current = Date.now();
           if (sig) lastSig.current = sig;
         });
       },
@@ -166,8 +176,12 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
       }
       if (msg.type === "frame") {
         inFlight.current = false;
+        lastAction.current = msg.action;
         setLast(msg);
         setStatus(ACTION_LABEL[msg.action] ?? msg.reason);
+      } else if (msg.type === "stats") {
+        const stats = msg.stats;
+        setLast((l) => (l ? { ...l, stats } : l));
       } else if (msg.type === "session") {
         setSessionId(msg.id);
       } else if (msg.type === "observation") {
@@ -258,7 +272,7 @@ export default function CameraPane({ onObservation }: { onObservation: (id: stri
             )}
             {stats && (
               <span className="num t-tiny ml-auto text-ink-2" data-testid="camera-stats">
-                {stats.frames} fotogramas · {stats.new ?? 0} nuevas · {stats.updated ?? 0} actualizadas · {stats.repeated ?? 0} repetidas
+                {stats.frames} analizados · {stats.new ?? 0} nuevas · {stats.updated ?? 0} actualizadas · {stats.repeated ?? 0} repetidas · {skipped} filtrados en el navegador
               </span>
             )}
           </div>

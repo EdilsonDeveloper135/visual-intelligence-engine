@@ -31,7 +31,8 @@ class ObservationFilters(BaseModel):
     document_type: str | None = Field(None, max_length=40)
     status: str | None = Field(None, max_length=20)
     validation_status: str | None = Field(None, max_length=30)
-    source: Literal["upload", "camera", "sequence"] | None = None
+    source: Literal["upload", "camera", "sequence", "video", "video_frame"] | None = None
+    parent_id: uuid.UUID | None = None
     ruc: str | None = Field(None, pattern=r"^\d{1,11}$")
     camera_session_id: uuid.UUID | None = None
     date_from: date | None = None
@@ -65,6 +66,7 @@ class ObservationSummary(BaseModel):
     thumbnail_asset_id: uuid.UUID | None
     camera_session_id: uuid.UUID | None
     supersedes_id: uuid.UUID | None
+    parent_id: uuid.UUID | None = None
     repeat_count: int
     model_name: str | None
     processing_ms: int | None

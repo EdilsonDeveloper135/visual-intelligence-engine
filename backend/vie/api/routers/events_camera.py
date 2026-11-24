@@ -181,6 +181,10 @@ class CameraSessionManager:
             while True:
                 ev = await q.get()
                 if ev.get("observation_id") in self.observations:
+                    if ev.get("type") == "camera.relabelled":
+                        self.stats["updated"] = max(0, self.stats.get("updated", 0) - 1)
+                        self.stats["new"] = self.stats.get("new", 0) + 1
+                        await self.send({"type": "stats", "stats": self.stats})
                     await self.send({"type": "event", "event": ev})
         finally:
             broadcaster.unsubscribe(q)

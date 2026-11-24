@@ -1,0 +1,59 @@
+# Advanced profile (needs >= 16 GB in Docker Desktop). NOT the default.
+#   1) INSTALL: VIE_VLM_MODELS_TO_PULL=qwen3-vl:4b-instruct make pull-model MODEL=qwen3-vl:4b-instruct
+#   2) RUN:     docker compose -f docker-compose.yml -f docker-compose.advanced.yml up -d --pull never
+# Then choose the model in Ajustes → Modelos.
+services:
+  ollama:
+    environment:
+      OLLAMA_CONTEXT_LENGTH: "8192"
+      LLAMA_ARG_THREADS: "8"
+      LLAMA_ARG_THREADS_BATCH: "8"
+    deploy:
+      resources:
+        limits:
+          cpus: "8"
+          memory: 7g
+    memswap_limit: 7g
+  vision:
+    environment:
+      VIE_OCR_MODEL_SIZE: medium
+      VIE_OCR_THREADS: "4"
+      OMP_NUM_THREADS: "4"
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 1536m
+    memswap_limit: 1536m
+  api:
+    environment:
+      VIE_VLM_NUM_CTX: "8192"
+      VIE_VLM_MODEL: qwen3-vl:4b-instruct
+  worker:
+    environment:
+      VIE_VLM_NUM_CTX: "8192"
+      VIE_VLM_MODEL: qwen3-vl:4b-instruct
+      VIE_VLM_MAX_OCR_CHARS: "5000"
+  # Optional Docling document converter (torch, ~4.4 GB image, 2-4 GB RAM). Pull it during the
+  # install phase: docker pull quay.io/docling-project/docling-serve-cpu:v1.39.0
+  # It runs on the internal "ml" network only. Integration status: see docs/limitations.md.
+  documents:
+    image: quay.io/docling-project/docling-serve-cpu:v1.39.0
+    profiles: ["docling"]
+    read_only: false
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    environment:
+      DOCLING_SERVE_ENABLE_REMOTE_SERVICES: "false"
+      DOCLING_NUM_THREADS: "4"
+      HF_HUB_OFFLINE: "1"
+    networks:
+      - ml
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4g
+    restart: unless-stopped

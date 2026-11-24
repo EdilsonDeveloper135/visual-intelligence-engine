@@ -15,6 +15,7 @@ sharpness, brightness, detected document quad). The tracker decides:
 
 from __future__ import annotations
 
+import base64
 from dataclasses import dataclass, field
 
 
@@ -22,9 +23,21 @@ def hamming(a: str, b: str) -> int:
     return bin(int(a, 16) ^ int(b, 16)).count("1")
 
 
+def signature_distance(a: str | None, b: str | None) -> float | None:
+    """Mean absolute difference of two brightness-normalised 32x32 signatures (None if unavailable)."""
+    if not a or not b:
+        return None
+    va, vb = base64.b64decode(a), base64.b64decode(b)
+    if len(va) != len(vb) or not va:
+        return None
+    total = sum(abs((x if x < 128 else x - 256) - (y if y < 128 else y - 256)) for x, y in zip(va, vb))
+    return total / len(va) / 25.0
+
+
 @dataclass
 class Scene:
     dhash: str
+    signature: str | None
     best_blur: float
     has_document: bool
     observation_id: str | None = None
@@ -51,6 +64,9 @@ class SceneTracker:
     min_blur: float = 15.0
     quality_gain: float = 1.6
     min_interval_s: float = 3.0
+    # content-change threshold on the normalised layout signature (same scene + noise ~0.004,
+    # lighting change ~0.008, different document with the same layout ~0.016)
+    visual_threshold: float = 0.012
     current: Scene | None = None
     window: list[dict] = field(default_factory=list)
     last_analysis_at: float = -1e9
@@ -59,8 +75,13 @@ class SceneTracker:
         if len(self.window) < self.stable_frames:
             return False
         last = self.window[-self.stable_frames:]
-        return all(hamming(last[i]["dhash"], last[i + 1]["dhash"]) <= self.repeat_threshold
-                   for i in range(len(last) - 1))
+        for i in range(len(last) - 1):
+            if hamming(last[i]["dhash"], last[i + 1]["dhash"]) > self.repeat_threshold:
+                return False
+            sd = signature_distance(last[i].get("signature"), last[i + 1].get("signature"))
+            if sd is not None and sd >= self.visual_threshold:
+                return False
+        return True
 
     def _best(self) -> int:
         start = max(0, len(self.window) - self.stable_frames)
@@ -80,7 +101,9 @@ class SceneTracker:
             return self._commit("new", "Primera escena estable.", now, None, has_doc, appeared=has_doc)
 
         d = hamming(a["dhash"], self.current.dhash)
-        if d <= self.repeat_threshold:
+        sd = signature_distance(a.get("signature"), self.current.signature)
+        same_content = sd is None or sd < self.visual_threshold
+        if d <= self.repeat_threshold and same_content:
             self.window.clear()
             self.current.last_seen = now
             self.current.repeats += 1
@@ -95,7 +118,8 @@ class SceneTracker:
         if not self._stable():
             return Decision("stabilizing", "La escena cambió; esperando estabilidad.", d)
         kind = "new" if d >= self.new_threshold else "updated"
-        reason = "Escena nueva." if kind == "new" else "Cambio moderado de la escena (p. ej. documento movido)."
+        reason = ("Escena nueva." if kind == "new" else
+                  "Cambio de contenido o de encuadre; la lectura del texto decidirá si es otro documento.")
         appeared = has_doc and not self.current.has_document
         return self._commit(kind, reason, now, d, has_doc, appeared=appeared)
 
@@ -108,6 +132,7 @@ class SceneTracker:
         best = self._best() if self.window else None
         frame = self.window[best] if best is not None else None
         self.current = Scene(dhash=(frame or {"dhash": self.current.dhash if self.current else "0"})["dhash"],
+                             signature=(frame or {}).get("signature"),
                              best_blur=(frame or {}).get("blur_variance", 0.0), has_document=has_doc,
                              analysed_at=now, last_seen=now)
         self.last_analysis_at = now

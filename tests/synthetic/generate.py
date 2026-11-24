@@ -118,6 +118,29 @@ def write_camera_y4m(out: Path, specs: dict[str, DocSpec], w: int = 960, h: int 
     return path
 
 
+def write_mp4(out: Path, specs: dict[str, DocSpec], w: int = 960, h: int = 540, fps: int = 10) -> Path:
+    """Short video with 3 distinct scenes (empty desk, factura, boleta) for the video pipeline."""
+    rng = np.random.default_rng(2)
+    desk = degrade.desk_background(w, h, seed=31)
+
+    def place(name: str) -> np.ndarray:
+        doc = render(specs[name])
+        scale = (h * 0.92) / doc.height
+        small = degrade.to_cv(doc.resize((int(doc.width * scale), int(doc.height * scale))))
+        frame = desk.copy()
+        x0 = (w - small.shape[1]) // 2
+        frame[int(h * 0.04):int(h * 0.04) + small.shape[0], x0:x0 + small.shape[1]] = small
+        return frame
+
+    path = out / "video_documentos.mp4"
+    writer = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), fps, (w, h))
+    for frame, seconds in [(desk, 2), (place("factura_ok"), 3), (place("boleta_ok"), 3)]:
+        for _ in range(seconds * fps):
+            writer.write(np.clip(frame.astype(np.int16) + rng.integers(-2, 3, frame.shape), 0, 255).astype(np.uint8))
+    writer.release()
+    return path
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", type=Path, required=True)
@@ -152,6 +175,7 @@ def main() -> None:
         write_pdf(out, "factura_digital", specs["factura_ok"])
     if args.camera:
         write_camera_y4m(out, specs)
+        write_mp4(out, specs)
     print(f"generated samples in {out}")
 
 

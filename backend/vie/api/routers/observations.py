@@ -27,7 +27,7 @@ router = APIRouter(dependencies=[Depends(require_auth)])
              summary="Cargar imágenes o documentos (PNG, JPEG, WEBP, PDF) y ponerlos en cola")
 async def upload(request: Request):
     s = get_settings()
-    max_part = max(s.max_image_mb, s.max_pdf_mb) * 1024 * 1024
+    max_part = max(s.max_image_mb, s.max_pdf_mb, s.max_video_mb) * 1024 * 1024
     form = await request.form(max_files=s.max_files_per_request, max_fields=10, max_part_size=1024 * 1024)
     files = [v for k, v in form.multi_items() if k == "files" and hasattr(v, "read")]
     if not files:
@@ -54,7 +54,8 @@ async def upload(request: Request):
     async with session_scope() as session:
         for i, (data, mime, name) in enumerate(payloads):
             obs = await services.create_observation(
-                session, data, mime, source="sequence" if seq_id else "upload", filename=name, mode=mode,
+                session, data, mime, source="video" if mime.startswith("video/") else ("sequence" if seq_id else "upload"),
+                filename=name, mode=mode,
                 schema_id=schema_id, extra_detail={"sequence_id": seq_id, "sequence_index": i} if seq_id else None)
             created.append({"id": str(obs.id), "filename": obs.source_detail.get("original_filename"), "mime": mime,
                             "status": obs.status})
@@ -171,7 +172,7 @@ async def validate(obs_id: uuid.UUID):
               summary="Editar datos extraídos (queda una revisión auditable y se revalida)")
 async def patch_fields(obs_id: uuid.UUID, body: FieldsPatch):
     async with session_scope() as session:
-        obs = await services.get_observation(session, obs_id)
+        obs = await services.get_observation(session, obs_id, lock=True)
         result, changes = await services.edit_fields(session, obs, body)
     await audit("observation.edit", target_type="observation", target_id=str(obs_id),
                 details={"fields": [c["field"] for c in changes], "reason": body.reason})

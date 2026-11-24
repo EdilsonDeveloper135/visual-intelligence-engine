@@ -56,3 +56,7 @@ async def health() -> dict:
         return r.json() if r.status_code == 200 else {"status": "error", "http": r.status_code}
     except httpx.HTTPError as exc:
         return {"status": "unreachable", "error": type(exc).__name__}
+
+
+async def video_keyframes(data: bytes, max_keyframes: int) -> dict:
+    return await _post("/v1/video/keyframes", data, {"max_keyframes": max_keyframes})

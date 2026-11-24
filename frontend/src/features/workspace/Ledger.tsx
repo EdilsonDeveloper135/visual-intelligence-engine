@@ -121,7 +121,8 @@ function Summary({ d }: { d: ObservationDetail }) {
         {r.text?.lines?.length ?? 0} líneas · {r.codes?.length ?? 0} código(s)
       </Row>
       <Row label="Origen">
-        {d.source === "camera" ? "Cámara" : d.source === "sequence" ? "Secuencia" : "Archivo"}
+        {d.source === "camera" ? "Cámara" : d.source === "sequence" ? "Secuencia" : d.source === "video" ? "Video" : d.source === "video_frame" ? "Escena de un video" : "Archivo"}
+        {d.parent_id && <a href={`/o/${d.parent_id}`} className="ml-2 text-blue">ver video</a>}
         {d.original_filename ? <span className="ml-1 text-ink-2">· {d.original_filename}</span> : null}
         {d.kind === "updated" && <span className="ml-2 text-blue">actualización de una observación previa</span>}
       </Row>

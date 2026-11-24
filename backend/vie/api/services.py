@@ -25,6 +25,8 @@ from .schemas import FieldsPatch, ObservationFilters, ObservationSummary
 
 def limit_for(mime: str) -> int:
     s = get_settings()
+    if mime.startswith("video/"):
+        return s.max_video_mb * 1024 * 1024
     return (s.max_pdf_mb if mime == "application/pdf" else s.max_image_mb) * 1024 * 1024
 
 
@@ -35,7 +37,7 @@ def check_upload(data: bytes, filename: str | None) -> str:
     if mime == "text/markup":
         raise Unprocessable("unsupported_type", "Los archivos SVG/HTML/XML no se aceptan por seguridad.")
     if mime not in SUPPORTED_UPLOAD:
-        raise Unprocessable("unsupported_type", "Tipo no soportado. Se aceptan PNG, JPEG, WEBP y PDF.")
+        raise Unprocessable("unsupported_type", "Tipo no soportado. Se aceptan PNG, JPEG, WEBP, PDF y video MP4/WEBM/MOV.")
     if len(data) > limit_for(mime):
         raise TooLarge("too_large", f"El archivo supera el límite de {limit_for(mime) // (1024 * 1024)} MB.")
     ext = PurePath(filename or "").suffix.lower()
@@ -55,10 +57,11 @@ async def check_quota(extra_bytes: int) -> None:
 async def create_observation(session: AsyncSession, data: bytes, mime: str, *, source: str, filename: str | None,
                              mode: str = "full", schema_id: str | None = None, camera_session_id=None,
                              kind: str = "new", supersedes_id=None, extra_detail: dict | None = None,
-                             priority: int | None = None) -> Observation:
+                             priority: int | None = None, parent_id=None) -> Observation:
     store = get_store()
     rel, sha, size = store.save_original(data, mime)
     obs = Observation(source=source, mode=mode, status="queued", kind=kind, supersedes_id=supersedes_id,
+                      parent_id=parent_id,
                       camera_session_id=camera_session_id, original_sha256=sha, original_mime=mime,
                       schema_id=schema_id,
                       source_detail={"original_filename": store.sanitize_filename(filename) if filename else None,
@@ -83,6 +86,7 @@ def summary(obs: Observation, thumb_id=None) -> ObservationSummary:
         total=str(obs.total) if obs.total is not None else None, currency=obs.currency,
         original_filename=(obs.source_detail or {}).get("original_filename"), page_count=obs.page_count,
         thumbnail_asset_id=thumb_id, camera_session_id=obs.camera_session_id, supersedes_id=obs.supersedes_id,
+        parent_id=obs.parent_id,
         repeat_count=obs.repeat_count, model_name=obs.model_name, processing_ms=obs.processing_ms,
         deleted_at=obs.deleted_at)
 
@@ -109,6 +113,8 @@ def apply_filters(stmt: Select, f: ObservationFilters) -> Select:
         stmt = stmt.where(Observation.issuer_ruc.like(f"{f.ruc}%"))
     if f.camera_session_id:
         stmt = stmt.where(Observation.camera_session_id == f.camera_session_id)
+    if f.parent_id:
+        stmt = stmt.where(Observation.parent_id == f.parent_id)
     if f.date_from:
         stmt = stmt.where(Observation.created_at >= datetime.combine(f.date_from, datetime.min.time(), UTC))
     if f.date_to:
@@ -136,8 +142,9 @@ async def thumbnails(session: AsyncSession, ids: list[uuid.UUID]) -> dict:
     return {r[0]: r[1] for r in rows}
 
 
-async def get_observation(session: AsyncSession, obs_id: uuid.UUID, include_deleted: bool = False) -> Observation:
-    obs = await session.get(Observation, obs_id)
+async def get_observation(session: AsyncSession, obs_id: uuid.UUID, include_deleted: bool = False,
+                          lock: bool = False) -> Observation:
+    obs = await session.get(Observation, obs_id, with_for_update=lock or None)
     if obs is None or (obs.deleted_at is not None and not include_deleted):
         raise NotFound("not_found", "Observación no encontrada.")
     return obs

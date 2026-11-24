@@ -9,6 +9,7 @@ import Console from "./Console";
 import DocumentViewer from "./DocumentViewer";
 import Ledger from "./Ledger";
 import UploadPane from "./UploadPane";
+import VideoPanel from "./VideoPanel";
 
 export function useObservation(id: string | undefined) {
   return useQuery({
@@ -43,6 +44,8 @@ export default function WorkspacePage({ cameraMode = false }: { cameraMode?: boo
                 </Link>
               </div>
             </div>
+          ) : detail && detail.original_mime?.startsWith("video/") ? (
+            <VideoPanel detail={detail} />
           ) : detail ? (
             <>
               <DocumentViewer detail={detail} />

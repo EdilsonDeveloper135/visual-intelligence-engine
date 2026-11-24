@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import base64
+
 import cv2
 import numpy as np
 
@@ -18,6 +20,15 @@ def dhash(gray: np.ndarray, size: int = 8) -> str:
     return f"{value:0{size * size // 4}x}"
 
 
+def layout_signature(gray: np.ndarray) -> str:
+    """Brightness-normalised 32x32 thumbnail, quantised to int8 (base64). Sensitive to content
+    changes that a 64-bit dHash misses (two documents with the same layout)."""
+    g = cv2.resize(gray, (32, 32), interpolation=cv2.INTER_AREA).astype(np.float32)
+    z = (g - g.mean()) / (g.std() + 1e-6)
+    q = np.clip(np.round(z * 25), -127, 127).astype(np.int8)
+    return base64.b64encode(q.tobytes()).decode("ascii")
+
+
 def assess(bgr: np.ndarray) -> dict:
     h, w = bgr.shape[:2]
     s = 640 / max(h, w)
@@ -29,6 +40,7 @@ def assess(bgr: np.ndarray) -> dict:
         "width": int(w),
         "height": int(h),
         "dhash": dhash(gray),
+        "signature": layout_signature(gray),
         "blur_variance": round(blur_variance(gray), 1),
         "brightness": round(float(gray.mean()), 1),
         "contrast": round(float(gray.std()), 1),

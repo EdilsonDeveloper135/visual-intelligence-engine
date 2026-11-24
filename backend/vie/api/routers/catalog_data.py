@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, Query
 from fastapi.responses import Response
+from pydantic import ValidationError
 from sqlalchemy import func, select
 
 from ...actions.registry import ACTIONS, describe
@@ -191,7 +192,11 @@ async def run_action(name: str, body: ActionIn):
     if action is None:
         await audit("action.rejected", details={"name": name[:60]}, outcome="denied")
         raise NotFound("unknown_action", "Acción no permitida.")
-    params = action.params.model_validate(body.params)
+    try:
+        params = action.params.model_validate(body.params)
+    except ValidationError as exc:
+        raise Unprocessable("invalid_params", "Parámetros de la acción no válidos.",
+                            details=[{"loc": list(e["loc"]), "msg": e["msg"]} for e in exc.errors()]) from exc
     async with session_scope() as session:
         out = await action.handler(session, params)
     await audit(f"action.{name}", details={"params": params.model_dump(mode="json")})

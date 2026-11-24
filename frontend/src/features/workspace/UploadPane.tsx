@@ -7,7 +7,7 @@ import { formatDateTime } from "../../lib/format";
 import { STATUS, VALIDATION, docTypeLabel } from "../../lib/labels";
 import type { ObservationSummary } from "../../lib/types";
 
-const ACCEPT = ".png,.jpg,.jpeg,.webp,.pdf,image/png,image/jpeg,image/webp,application/pdf";
+const ACCEPT = ".png,.jpg,.jpeg,.webp,.pdf,.mp4,.webm,.mov,image/png,image/jpeg,image/webp,application/pdf,video/mp4,video/webm,video/quicktime";
 
 export async function uploadFiles(files: File[], opts: { mode?: string; sequence?: boolean } = {}) {
   const fd = new FormData();
@@ -68,7 +68,7 @@ export default function UploadPane() {
         </div>
         <FileUp size={30} className="mb-3 text-blue" />
         <h1 className="t-title mb-2">Ponga un documento sobre la mesa</h1>
-        <p className="mb-5 max-w-[30ch] text-ink-2">Arrastre aquí una foto, un escaneo o un PDF. Se lee el texto, se interpreta con el modelo local y se verifica.</p>
+        <p className="mb-5 max-w-[30ch] text-ink-2">Arrastre aquí una foto, un escaneo, un PDF o un video. Se lee el texto, se interpreta con el modelo local y se verifica.</p>
         <button className="btn btn-ink" onClick={() => input.current?.click()} disabled={busy}>
           {busy ? "Cargando…" : "Elegir archivos"}
         </button>
@@ -76,7 +76,7 @@ export default function UploadPane() {
           <input type="checkbox" checked={ocrOnly} onChange={(e) => setOcrOnly(e.target.checked)} />
           Solo lectura (sin el modelo, más rápido)
         </label>
-        <p className="t-tiny absolute bottom-5 px-6 text-ink-3">PNG, JPEG, WEBP o PDF, hasta 20 MB por imagen y 30 MB por PDF. Nada sale de este equipo.</p>
+        <p className="t-tiny absolute bottom-5 px-6 text-ink-3">PNG, JPEG, WEBP, PDF o video (MP4, WEBM, MOV), hasta 20 MB por imagen, 30 MB por PDF y 100 MB por video. Nada sale de este equipo.</p>
         <input ref={input} type="file" accept={ACCEPT} multiple hidden onChange={(e) => send(Array.from(e.target.files ?? []))} data-testid="file-input" />
       </div>
       {error && (

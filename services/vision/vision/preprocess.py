@@ -89,9 +89,10 @@ def estimate_skew(gray: np.ndarray) -> float:
             ang = ang - 90
         if rw < 60 or rh < 4 or rw / max(rh, 1) < 4:
             continue
-        if ang < -45:
+        # OpenCV versions differ in their minAreaRect angle convention: fold into (-45, 45]
+        while ang <= -45:
             ang += 90
-        if ang > 45:
+        while ang > 45:
             ang -= 90
         angles.append(ang)
         weights.append(rw)

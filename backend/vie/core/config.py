@@ -25,13 +25,15 @@ class Settings(BaseSettings):
     auth_enabled: bool = True
     port: int = 8765
     allowed_hosts: list[str] = Field(default_factory=lambda: ["127.0.0.1", "localhost"])
+    # Only used by the test profile (Playwright/system tests browse nginx's internal port 8080).
+    extra_origins: list[str] = Field(default_factory=list)
     session_hours: int = 12
     cookie_name: str = "vie_session"
 
     # --- multimodal model ----------------------------------------------------------
     vlm_model: str = "qwen3-vl:2b-instruct"
     vlm_num_ctx: int = 4096
-    vlm_num_predict: int = 768
+    vlm_num_predict: int = 1024
     vlm_num_thread: int = 6
     vlm_max_side_document: int = 1280
     vlm_max_side_camera: int = 1024
@@ -45,6 +47,8 @@ class Settings(BaseSettings):
     max_image_mb: int = 20
     max_pdf_mb: int = 30
     max_pdf_pages: int = 30
+    max_video_mb: int = 100
+    max_video_keyframes: int = 12
     max_files_per_request: int = 10
     job_timeout_s: int = 600
     storage_quota_gb: float = 10.0
@@ -59,7 +63,7 @@ class Settings(BaseSettings):
 
     @property
     def allowed_origins(self) -> set[str]:
-        return {f"http://{h}:{self.port}" for h in self.allowed_hosts}
+        return {f"http://{h}:{self.port}" for h in self.allowed_hosts} | set(self.extra_origins)
 
 
 @lru_cache

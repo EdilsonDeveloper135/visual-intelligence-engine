@@ -21,7 +21,7 @@ from . import __version__
 from .assess import assess as assess_frame
 from .codes import read_codes
 from .config import get_settings
-from .media import (IMAGE_TYPES, MediaError, decode_frame, decode_image, encode_jpeg, pdf_page_count,
+from .media import (IMAGE_TYPES, VIDEO_TYPES, MediaError, decode_frame, decode_image, encode_jpeg, pdf_page_count,
                     render_pdf_page, sniff, to_bgr)
 from .ocr import get_engine, reading_order
 from .preprocess import preprocess
@@ -113,6 +113,8 @@ async def inspect(request: Request):
         return {"mime": mime, "kind": "pdf", "page_count": pdf_page_count(data)}
     if mime in IMAGE_TYPES:
         return {"mime": mime, "kind": "image", "page_count": 1}
+    if mime in VIDEO_TYPES:
+        return {"mime": mime, "kind": "video", "page_count": 0}
     if mime == "image/heic":
         raise MediaError("unsupported_type", "HEIC/HEIF no está soportado en esta versión; exporte la foto como JPEG.")
     raise MediaError("unsupported_type", "Tipo de archivo no soportado (se aceptan PNG, JPEG, WEBP y PDF).")
@@ -210,6 +212,29 @@ async def analyze(request: Request, page: int = Query(0, ge=0, le=999), preproce
     result = await run_in_threadpool(job)
     result["timings"]["total_ms"] = round((time.perf_counter() - t0) * 1000)
     return result
+
+
+@app.post("/v1/video/keyframes")
+async def video_keyframes(request: Request, max_keyframes: int = Query(12, ge=1, le=30)):
+    data = await _read_body(request, settings.max_upload_mb)
+    mime = sniff(data)
+    if mime not in VIDEO_TYPES:
+        raise MediaError("unsupported_type", "Se esperaba un video MP4, WEBM o MOV.")
+    from starlette.concurrency import run_in_threadpool
+
+    from .video import keyframes
+
+    def job():
+        with _heavy:
+            try:
+                return keyframes(data, max_keyframes=max_keyframes)
+            finally:
+                _release_memory()
+
+    res = await run_in_threadpool(job)
+    for k in res["keyframes"]:
+        k["jpeg_b64"] = _b64(k.pop("jpeg"))
+    return res
 
 
 @app.post("/v1/assess")

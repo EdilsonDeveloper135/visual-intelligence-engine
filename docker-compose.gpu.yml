@@ -1,0 +1,13 @@
+# Optional NVIDIA GPU for Ollama (Linux hosts with the NVIDIA Container Toolkit).
+# NOT verified on the development machine (Apple Silicon has no NVIDIA GPU and Docker
+# Desktop on macOS does not expose Metal to containers).
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up -d --pull never
+services:
+  ollama:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

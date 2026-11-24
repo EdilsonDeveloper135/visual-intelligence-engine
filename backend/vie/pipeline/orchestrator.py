@@ -21,6 +21,7 @@ from decimal import Decimal
 from PIL import Image
 from sqlalchemy import select
 
+from .. import PIPELINE_VERSION
 from ..clients import ollama
 from ..clients import vision
 from ..core import runtime
@@ -132,10 +133,15 @@ async def handle_process(job: Job) -> None:
             raise Unprocessable("missing_original", "No se encontró el archivo original.")
         obs.status, obs.stage = "processing", "vision"
         obs_id, source, mode = obs.id, obs.source, obs.mode
-        original_path = original.path
+        original_path, original_mime = original.path, original.mime
+        filename = (obs.source_detail or {}).get("original_filename") or "video"
+    data = store.read(original_path)
+    if original_mime.startswith("video/"):
+        await emit("observation.processing", "Extrayendo escenas del video…", observation_id=obs_id)
+        await _process_video(obs_id, mode, data, filename, t_start)
+        return
     await emit("observation.processing", "Analizando imagen (preprocesamiento y OCR)…", observation_id=obs_id)
 
-    data = store.read(original_path)
     try:
         info = await vision.inspect(data)
     except ServiceUnavailable as exc:
@@ -183,7 +189,7 @@ async def handle_process(job: Job) -> None:
                       None)
     will_interpret = mode == "full" and s.vlm_enabled
     async with session_scope() as session:
-        obs = await session.get(Observation, obs_id)
+        obs = await session.get(Observation, obs_id, with_for_update=True)
         if obs is None or obs.deleted_at is not None:
             return
         c = compose(str(obs_id), source, pages, ocr_engine=ocr_engine, schema_id=obs.schema_id)
@@ -193,6 +199,7 @@ async def handle_process(job: Job) -> None:
             session.add(Alert(observation_id=obs_id, severity="warning", code="duplicate_document",
                               message=f"Documento posiblemente duplicado ({len(dups)} registro(s) previos)."))
         result = apply_human_edits(c.result, obs.result)
+        relabelled = await _camera_content_check(session, obs, c.result.text.get("full_text", ""))
         result.metadata.vlm_status = "pending" if will_interpret else "not_requested"
         result.metadata.timings = {**timings, "stage1_ms": round((time.perf_counter() - t_start) * 1000)}
         result.metadata.processing_time_ms = result.metadata.timings["stage1_ms"]
@@ -206,11 +213,88 @@ async def handle_process(job: Job) -> None:
         if will_interpret:
             await queue.enqueue(session, "interpret", observation_id=obs_id,
                                 priority=queue.PRIORITY["camera" if source == "camera" else "upload"], max_attempts=2)
+    if relabelled:
+        await emit("camera.relabelled", "El texto difiere de la observación anterior: se registra como observación nueva",
+                   observation_id=obs_id, data={"kind": "new"})
     await emit("observation.ocr_ready" if will_interpret else "observation.completed",
                f"OCR listo: {len(c.lines)} líneas, tipo {result.document_type or 'desconocido'}, "
                f"validación {result.validation.status}", observation_id=obs_id,
                data={"status": "ocr_ready" if will_interpret else "completed", "document_type": result.document_type,
                      "validation": result.validation.status, "lines": len(c.lines)})
+
+
+async def _process_video(obs_id: uuid.UUID, mode: str, data: bytes, filename: str, t_start: float) -> None:
+    """Video -> keyframes (one per distinct scene) -> one child observation per keyframe."""
+    from ..api.services import create_observation  # domain helper shared with the API
+    from ..models.result import Metadata, ValidationReport
+
+    s = get_settings()
+    store = get_store()
+    try:
+        res = await vision.video_keyframes(data, s.max_video_keyframes)
+    except ServiceUnavailable as exc:
+        raise Retryable(exc.message) from exc
+    base = filename.rsplit(".", 1)[0][:60]
+    children = []
+    async with session_scope() as session:
+        obs = await session.get(Observation, obs_id, with_for_update=True)
+        if obs is None or obs.deleted_at is not None:
+            return
+        for i, k in enumerate(res["keyframes"], start=1):
+            jpeg = base64.b64decode(k["jpeg_b64"])
+            if i == 1:
+                tb, tw, th = _thumbnail(jpeg)
+                rel, sha, size = store.save_derived(str(obs_id), "thumb_p0.jpg", tb)
+                session.add(Asset(observation_id=obs_id, kind="thumbnail", page_index=0, sha256=sha,
+                                  mime="image/jpeg", width=tw, height=th, size_bytes=size, path=rel))
+            child = await create_observation(
+                session, jpeg, "image/jpeg", source="video_frame", filename=f"{base}-escena{i}-{k['t_s']:.1f}s.jpg",
+                mode=mode, parent_id=obs_id, priority=queue.PRIORITY["upload"],
+                extra_detail={"video_t_s": k["t_s"], "frame_index": k["frame_index"], "scene": i})
+            children.append({"observation_id": str(child.id), "scene": i, "t_s": k["t_s"],
+                             "blur_variance": k["blur_variance"], "scene_frames": k["scene_frames"]})
+        n = len(children)
+        result = ObservationResult(
+            observation_id=str(obs_id), source="video",
+            description=f"Video de {res['duration_s']:.1f} s con {n} escena(s) distinta(s); cada escena se analiza como "
+                        "una observación independiente.",
+            validation=ValidationReport(status="insufficient_data"),
+            metadata=Metadata(pipeline_version=PIPELINE_VERSION, vlm_status="not_requested",
+                              timings={"video_ms": round((time.perf_counter() - t_start) * 1000)}))
+        payload = result.model_dump(mode="json")
+        payload["video"] = {k: v for k, v in res.items() if k != "keyframes"} | {"keyframes": children}
+        obs.result = payload
+        obs.title = f"Video ({n} escena{'s' if n != 1 else ''})"
+        obs.description = result.description
+        obs.page_count = 0
+        obs.status, obs.stage = "completed", None
+        obs.processing_ms = result.metadata.timings["video_ms"]
+        obs.search_text = f"video {filename}"
+    await emit("observation.completed", f"Video procesado: {len(children)} escena(s) en cola para lectura",
+               observation_id=obs_id, data={"status": "completed", "keyframes": len(children)})
+
+
+async def _camera_content_check(session, obs: Observation, text: str) -> bool:
+    """Camera "updated" observations are scene changes of moderate visual size. If the text read is
+    clearly different from the observation it would supersede, it is a different document: relabel it
+    as a NEW observation (two documents with the same layout look alike to image hashes, not to OCR)."""
+    import difflib
+
+    if obs.source != "camera" or obs.kind != "updated" or obs.supersedes_id is None:
+        return False
+    prev = await session.get(Observation, obs.supersedes_id)
+    if prev is None:
+        return False
+    a = " ".join((prev.result or {}).get("text", {}).get("full_text", "").split()).upper()
+    b = " ".join(text.split()).upper()
+    if len(a) < 20 and len(b) < 20:
+        return False
+    similarity = difflib.SequenceMatcher(None, a[:4000], b[:4000]).ratio()
+    obs.source_detail = {**(obs.source_detail or {}), "text_similarity_to_superseded": round(similarity, 3)}
+    if similarity < 0.6:
+        obs.kind, obs.supersedes_id = "new", None
+        return True
+    return False
 
 
 def _key_fields(result: ObservationResult) -> tuple[str | None, str | None]:
@@ -250,17 +334,17 @@ async def handle_interpret(job: Job) -> None:
                                     doc_type_hint=base.result.document_type)
     vlm_ms = meta.get("vlm_ms", 0)
     async with session_scope() as session:
-        obs = await session.get(Observation, obs_id)
+        obs = await session.get(Observation, obs_id, with_for_update=True)
         if obs is None or obs.deleted_at is not None:
             return
-        # If the model recognised a known type that rules missed, use its schema next time it is reprocessed
         c = compose(str(obs_id), source, pages, vlm=vlm_out, vlm_meta=_meta_fields(meta), schema_id=schema.id,
                     ocr_engine=obs.ocr_engine)
         dups = await _find_duplicates(session, obs, *_key_fields(c.result))
         if dups:
             c = compose(str(obs_id), source, pages, vlm=vlm_out, vlm_meta=_meta_fields(meta), schema_id=schema.id,
                         ocr_engine=obs.ocr_engine, duplicates=dups)
-        result = apply_human_edits(c.result, previous)
+        # re-read the CURRENT result: a person may have edited fields while the model was running
+        result = apply_human_edits(c.result, obs.result)
         prev_timings = (previous.get("metadata") or {}).get("timings") or {}
         result.metadata.timings = {**prev_timings, "vlm_ms": vlm_ms,
                                    "stage2_ms": round((time.perf_counter() - t0) * 1000)}
