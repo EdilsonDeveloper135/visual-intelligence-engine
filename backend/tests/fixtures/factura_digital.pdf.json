@@ -1,0 +1,46 @@
+{
+  "document_type_code": "01",
+  "title": "FACTURA ELECTRÓNICA",
+  "issuer_name": "COMERCIAL ANDINA DEMO S.A.C.",
+  "issuer_ruc": "20526018151",
+  "serie": "F001",
+  "numero": "00000123",
+  "serie_numero": "F001-00000123",
+  "issue_date": "2026-11-15",
+  "customer_name": "CLIENTE DE PRUEBA E.I.R.L.",
+  "customer_doc_type": "6",
+  "customer_doc": "20908301669",
+  "currency": "PEN",
+  "items": [
+    {
+      "quantity": "5",
+      "unit": "NIU",
+      "description": "Lapicero azul punta fina",
+      "unit_price": "2.30",
+      "amount": "11.50"
+    },
+    {
+      "quantity": "1",
+      "unit": "ZZ",
+      "description": "Instalación de punto de red",
+      "unit_price": "85.00",
+      "amount": "85.00"
+    },
+    {
+      "quantity": "1",
+      "unit": "NIU",
+      "description": "Cuaderno A4 cuadriculado",
+      "unit_price": "12.50",
+      "amount": "12.50"
+    }
+  ],
+  "items_sum": "109.00",
+  "taxable": "109.00",
+  "tax": "19.62",
+  "tax_rate": "0.18",
+  "total": "128.62",
+  "consistent": true,
+  "prices_include_tax": false,
+  "qr_payload": "20526018151|01|F001|00000123|19.62|128.62|2026-11-15|6|20908301669|c3ludGhldGljLXRlc3QtaGFzaA==|",
+  "has_injection_text": false
+}

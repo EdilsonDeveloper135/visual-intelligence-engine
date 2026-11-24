@@ -1,0 +1,32 @@
+{
+  "document_type_code": "07",
+  "title": "NOTA DE CRÉDITO ELECTRÓNICA",
+  "issuer_name": "COMERCIAL ANDINA DEMO S.A.C.",
+  "issuer_ruc": "20526018151",
+  "serie": "FC01",
+  "numero": "00000009",
+  "serie_numero": "FC01-00000009",
+  "issue_date": "2026-11-20",
+  "customer_name": "CLIENTE DE PRUEBA E.I.R.L.",
+  "customer_doc_type": "6",
+  "customer_doc": "20908301669",
+  "currency": "PEN",
+  "items": [
+    {
+      "quantity": "5",
+      "unit": "NIU",
+      "description": "Tóner para impresora láser",
+      "unit_price": "189.90",
+      "amount": "949.50"
+    }
+  ],
+  "items_sum": "949.50",
+  "taxable": "949.50",
+  "tax": "170.91",
+  "tax_rate": "0.18",
+  "total": "1120.41",
+  "consistent": true,
+  "prices_include_tax": false,
+  "qr_payload": "20526018151|07|FC01|00000009|170.91|1120.41|2026-11-20|6|20908301669|c3ludGhldGljLXRlc3QtaGFzaA==|",
+  "has_injection_text": false
+}

@@ -1,0 +1,39 @@
+{
+  "document_type_code": "01",
+  "title": "FACTURA ELECTRÓNICA",
+  "issuer_name": "COMERCIAL ANDINA DEMO S.A.C.",
+  "issuer_ruc": "20526018151",
+  "serie": "F001",
+  "numero": "00000124",
+  "serie_numero": "F001-00000124",
+  "issue_date": "2026-11-15",
+  "customer_name": "INVERSIONES MUESTRA S.A.C.",
+  "customer_doc_type": "6",
+  "customer_doc": "20993518191",
+  "currency": "PEN",
+  "items": [
+    {
+      "quantity": "2",
+      "unit": "NIU",
+      "description": "Cuaderno A4 cuadriculado",
+      "unit_price": "12.50",
+      "amount": "25.00"
+    },
+    {
+      "quantity": "5",
+      "unit": "KGM",
+      "description": "Café molido orgánico",
+      "unit_price": "38.00",
+      "amount": "190.00"
+    }
+  ],
+  "items_sum": "215.00",
+  "taxable": "215.00",
+  "tax": "38.70",
+  "tax_rate": "0.18",
+  "total": "263.70",
+  "consistent": false,
+  "prices_include_tax": false,
+  "qr_payload": "20526018151|01|F001|00000124|38.70|263.70|2026-11-15|6|20993518191|c3ludGhldGljLXRlc3QtaGFzaA==|",
+  "has_injection_text": false
+}

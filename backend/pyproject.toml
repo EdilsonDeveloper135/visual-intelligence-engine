@@ -1,0 +1,36 @@
+[project]
+name = "vie-backend"
+version = "1.0.0"
+description = "Visual Intelligence Engine: API + worker (pipeline, extraction, validation, memory, actions)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi==0.165.0",
+    "uvicorn==0.54.0",
+    "websockets==17.4",
+    "pydantic==2.14.4",
+    "pydantic-settings==2.16.3",
+    "python-multipart==0.0.34",
+    "sqlalchemy[asyncio]==2.1.9",
+    "asyncpg==0.32.0",
+    "alembic==1.20.1",
+    "httpx==0.28.1",
+    "rapidfuzz==3.14.6",
+    "openpyxl==3.1.5",
+    "pyyaml==6.0.4",
+    "pillow==13.0.0",
+]
+
+[dependency-groups]
+dev = ["pytest==9.2.0", "pytest-asyncio==1.5.0"]
+
+[tool.uv]
+package = false
+environments = ["sys_platform == 'linux'"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"
+markers = ["db: needs PostgreSQL (VIE_TEST_DATABASE_URL)"]

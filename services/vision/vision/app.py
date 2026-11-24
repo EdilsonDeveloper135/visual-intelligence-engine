@@ -93,7 +93,16 @@ async def _read_body(request: Request, limit_mb: int) -> bytes:
 @app.get("/health")
 def health():
     eng = get_engine()
-    return {"status": "ok", "version": __version__, "ocr_engine": eng.engine_id}
+    resources = {}
+    try:
+        from pathlib import Path
+
+        resources["memory_bytes"] = int(Path("/sys/fs/cgroup/memory.current").read_text())
+        mx = Path("/sys/fs/cgroup/memory.max").read_text().strip()
+        resources["memory_limit_bytes"] = None if mx == "max" else int(mx)
+    except (OSError, ValueError):
+        pass
+    return {"status": "ok", "version": __version__, "ocr_engine": eng.engine_id, "resources": resources}
 
 
 @app.post("/v1/inspect")

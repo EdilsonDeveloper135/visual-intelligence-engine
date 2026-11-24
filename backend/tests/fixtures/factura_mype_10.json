@@ -1,0 +1,39 @@
+{
+  "document_type_code": "01",
+  "title": "FACTURA ELECTRÓNICA",
+  "issuer_name": "SERVICIOS ÑAWI PRUEBA S.A.",
+  "issuer_ruc": "20865797541",
+  "serie": "F003",
+  "numero": "00000045",
+  "serie_numero": "F003-00000045",
+  "issue_date": "2026-10-30",
+  "customer_name": "CLIENTE DE PRUEBA E.I.R.L.",
+  "customer_doc_type": "6",
+  "customer_doc": "20908301669",
+  "currency": "PEN",
+  "items": [
+    {
+      "quantity": "2",
+      "unit": "ZZ",
+      "description": "Servicio de mantenimiento preventivo",
+      "unit_price": "150.00",
+      "amount": "300.00"
+    },
+    {
+      "quantity": "2",
+      "unit": "NIU",
+      "description": "Papel bond A4 75 g (millar)",
+      "unit_price": "24.50",
+      "amount": "49.00"
+    }
+  ],
+  "items_sum": "349.00",
+  "taxable": "349.00",
+  "tax": "34.90",
+  "tax_rate": "0.10",
+  "total": "383.90",
+  "consistent": true,
+  "prices_include_tax": false,
+  "qr_payload": "20865797541|01|F003|00000045|34.90|383.90|2026-10-30|6|20908301669|c3ludGhldGljLXRlc3QtaGFzaA==|",
+  "has_injection_text": false
+}

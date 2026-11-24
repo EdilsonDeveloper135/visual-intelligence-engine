@@ -1,0 +1,39 @@
+{
+  "document_type_code": "03",
+  "title": "BOLETA DE VENTA ELECTRÓNICA",
+  "issuer_name": "DISTRIBUIDORA EL MOLLE DEMO E.I.R.L.",
+  "issuer_ruc": "10390996034",
+  "serie": "B002",
+  "numero": "00004567",
+  "serie_numero": "B002-00004567",
+  "issue_date": "2026-11-02",
+  "customer_name": "JOSÉ PÉREZ EJEMPLO",
+  "customer_doc_type": "1",
+  "customer_doc": "08246281",
+  "currency": "PEN",
+  "items": [
+    {
+      "quantity": "2",
+      "unit": "KGM",
+      "description": "Café molido orgánico",
+      "unit_price": "38.00",
+      "amount": "76.00"
+    },
+    {
+      "quantity": "1",
+      "unit": "ZZ",
+      "description": "Instalación de punto de red",
+      "unit_price": "85.00",
+      "amount": "85.00"
+    }
+  ],
+  "items_sum": "161.00",
+  "taxable": "136.44",
+  "tax": "24.56",
+  "tax_rate": "0.18",
+  "total": "161.00",
+  "consistent": true,
+  "prices_include_tax": true,
+  "qr_payload": "10390996034|03|B002|00004567|24.56|161.00|2026-11-02|1|08246281|c3ludGhldGljLXRlc3QtaGFzaA==|",
+  "has_injection_text": false
+}

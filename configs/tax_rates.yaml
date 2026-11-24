@@ -1,0 +1,25 @@
+# Tax rates accepted by the validator (Peru). The validator REPORTS the rate it
+# observes and never assumes a single rate. Keep this list up to date with SUNAT
+# regulations; an observed rate outside the list produces a warning, not an error.
+igv:
+  # absolute tolerance (PEN/USD) when comparing amounts
+  tolerance_abs: "0.05"
+  # relative tolerance for the implied rate (e.g. 0.002 = ±0.2 percentage points)
+  tolerance_rate: "0.002"
+  rates:
+    - rate: "0.18"
+      label: "Tasa general (IGV 16% + IPM 2%)"
+    - rate: "0.10"
+      label: "Régimen especial MYPE restaurantes, hoteles y alojamientos turísticos (verificar vigencia)"
+    - rate: "0.00"
+      label: "Operaciones exoneradas / inafectas"
+arithmetic:
+  # per-line tolerance for quantity x unit price = amount
+  line_tolerance_abs: "0.02"
+  # tolerance for sums (grows with the number of items)
+  sum_tolerance_abs: "0.05"
+dates:
+  # issue dates later than today + N days are flagged
+  future_tolerance_days: 1
+  # issue dates older than N years are flagged as unusual (warning only)
+  max_age_years: 15
