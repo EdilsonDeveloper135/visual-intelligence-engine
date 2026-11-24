@@ -1,0 +1,8 @@
+{
+  "generated_at": "2026-11-24T06:10:44Z",
+  "runtime": "ollama/ollama:0.40.17",
+  "models": [
+    {"name": "qwen3-vl:2b-instruct", "id": "afc393e3572c", "size": "1.9GB"}
+  ],
+  "ocr_models": "baked into vie/vision:1.0.0 (see services/vision/build/fetch_models.py for SHA-256)"
+}

@@ -93,6 +93,7 @@ export const STEPS: Record<string, string> = {
   deskew: "Enderezado",
   illumination_and_contrast: "Iluminación y contraste",
   denoise: "Reducción de ruido",
+  upscale_small_document: "Ampliación del documento",
   preprocessing: "Preprocesamiento",
 };
 

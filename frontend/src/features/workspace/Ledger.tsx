@@ -102,7 +102,9 @@ function Summary({ d }: { d: ObservationDetail }) {
       {r.description && (
         <div className="border-b hairline px-4 py-3">
           <p className="leading-relaxed">{r.description}</p>
-          <p className="t-tiny mt-1 text-ink-3">Descripción redactada por el modelo; los datos de abajo se verifican por separado.</p>
+          {m.vlm_status === "done" && (
+            <p className="t-tiny mt-1 text-ink-3">Descripción redactada por el modelo; los datos de abajo se verifican por separado.</p>
+          )}
         </div>
       )}
       <Row label="Tipo de documento">

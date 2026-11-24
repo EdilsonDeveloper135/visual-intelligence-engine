@@ -154,6 +154,14 @@ def preprocess(bgr: np.ndarray, quality_flags: list[str]) -> Preprocessed:
         img, m = warp_document(img, quad)
         total = m @ total
         steps.append({"name": "perspective_correction", "applied": True, "area_ratio": round(ratio, 3)})
+        # A document that occupied a small part of the frame (video, distant camera) ends up tiny:
+        # upscale it so the text detector/recogniser see characters at a usable size.
+        h2, w2 = img.shape[:2]
+        if max(h2, w2) < 1400:
+            f = min(2.5, 1400 / max(h2, w2))
+            img = cv2.resize(img, (round(w2 * f), round(h2 * f)), interpolation=cv2.INTER_CUBIC)
+            total = np.diag([f, f, 1.0]) @ total
+            steps.append({"name": "upscale_small_document", "applied": True, "factor": round(f, 2)})
     else:
         steps.append({"name": "perspective_correction", "applied": False,
                       "reason": "no_document_border" if quad is None else "document_fills_frame"})

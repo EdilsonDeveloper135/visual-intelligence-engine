@@ -170,9 +170,11 @@ def check_item_lines(ctx: Context) -> list[CheckResult]:
             continue
         expected = (q * p).quantize(D("0.01"))
         ok = abs(expected - a) <= line_tol
-        out.append(CheckResult(id=f"item_line_{i + 1}", rule="item_lines", status="pass" if ok else "fail",
-                               severity="info" if ok else "error",
-                               message=(f"Ítem {i + 1}: {q} × {p} = {expected}" + ("" if ok else f" ≠ {a}")),
+        # line-level mismatches are far more often reading errors than document errors -> review
+        out.append(CheckResult(id=f"item_line_{i + 1}", rule="item_lines", status="pass" if ok else "warn",
+                               severity="info" if ok else "warning",
+                               message=(f"Ítem {i + 1}: {q} × {p} = {expected}" + ("" if ok else
+                                        f" ≠ {a}; revise la lectura de esta línea")),
                                fields=[f"items[{i}]"], expected=str(expected), observed=str(a),
                                tolerance=str(line_tol)))
     return out
@@ -199,9 +201,11 @@ def check_items_sum(ctx: Context) -> list[CheckResult]:
                             fields=["items", "total"], expected=str(s), observed=str(total), tolerance=str(tol))]
     if taxable is None and total is None:
         return [_skip("items_sum", "Sin base imponible ni total para comparar.", ["items"])]
-    return [CheckResult(id="items_sum", rule="items_sum", status="fail", severity="error",
+    # A mismatch may come from the document OR from an incomplete reading of the table (a missed line),
+    # so it is a warning that sends the items to human review; totals_sum is the hard arithmetic check.
+    return [CheckResult(id="items_sum", rule="items_sum", status="warn", severity="warning",
                         message=f"La suma de ítems ({s}) no coincide ni con la base ({taxable}) ni con el total "
-                                f"({total}).",
+                                f"({total}): revise los ítems (puede faltar una línea o haber un error).",
                         fields=["items", "taxable_amount", "total"], expected=str(s),
                         observed={"taxable_amount": str(taxable) if taxable is not None else None,
                                   "total": str(total) if total is not None else None}, tolerance=str(tol))]
@@ -454,7 +458,7 @@ def validate(ctx: Context) -> ValidationReport:
         if it.needs_review:
             needs_review.append(f"items[{i}]")
     for c in checks:
-        if c.status == "fail":
+        if c.status == "fail" or (c.status == "warn" and c.rule in ("items_sum", "item_lines")):
             for f in c.fields:
                 if f not in needs_review:
                     needs_review.append(f)
